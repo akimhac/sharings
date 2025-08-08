@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import PlaceSearch from './PlaceSearch';
+import SubscriptionButton from './SubscriptionButton';
 
 const Hero = () => {
   const scrollToForm = () => {
@@ -25,14 +26,17 @@ const Hero = () => {
               </p>
               <div className="mt-8 sm:mt-10">
                 <PlaceSearch />
-                <div className="mt-8 rounded-md shadow">
-                  <button
-                    onClick={scrollToForm}
-                    className="w-full flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:text-lg md:px-10 group"
-                  >
-                    Commencer maintenant
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                <div className="mt-8 space-y-4">
+                  <div className="rounded-md shadow">
+                    <button
+                      onClick={scrollToForm}
+                      className="w-full flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:text-lg md:px-10 group"
+                    >
+                      Commencer maintenant
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                  <SubscriptionButton />
                 </div>
                 <p className="mt-3 text-sm text-gray-500 text-center lg:text-left">
                   Inscription gratuite pour le lancement
