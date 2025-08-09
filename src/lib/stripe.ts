@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-import { products } from '../stripe-config';
 
 export async function createCheckoutSession(priceId: string, mode: 'payment' | 'subscription') {
   const { data: { session } } = await supabase.auth.getSession();

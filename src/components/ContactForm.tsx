@@ -63,13 +63,16 @@ const ContactForm = () => {
         interest: 'location',
         message: ''
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error:', error);
       toast.dismiss(loadingToast);
-      toast.error(error.message || 'Une erreur est survenue. Veuillez réessayer.', {
-        duration: 5000,
-        icon: '❌'
-      });
+      toast.error(
+        error instanceof Error ? error.message : 'Une erreur est survenue. Veuillez réessayer.',
+        {
+          duration: 5000,
+          icon: '❌'
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }
