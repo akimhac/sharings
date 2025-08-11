@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 type Annonce = {
   id: number;
   titre: string;
   description: string;
+  adresse: string;
   ville: string;
+  disponibilite: string[];
   prix: number;
+  type_poste: string;
+  photos: string[];
 };
 
 const RechercheAnnonces = () => {
@@ -17,15 +21,14 @@ const RechercheAnnonces = () => {
     const { data, error } = await supabase
       .from('annonces')
       .select('*')
-      .eq('ville', ville);
-
+      .ilike('ville', `%${ville}%`);
     if (!error && data) {
       setAnnonces(data as Annonce[]);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-lg mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Rechercher des annonces</h1>
       <div className="space-y-4">
         <input
@@ -33,7 +36,7 @@ const RechercheAnnonces = () => {
           value={ville}
           onChange={(e) => setVille(e.target.value)}
           placeholder="Ville"
-          className="w-full border rounded p-2"
+          className="input"
         />
         <button
           onClick={rechercher}
@@ -42,13 +45,25 @@ const RechercheAnnonces = () => {
           Rechercher
         </button>
       </div>
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-4 space-y-4">
         {annonces.map((annonce) => (
-          <li key={annonce.id} className="border p-2 rounded">
-            <h2 className="font-semibold">
+          <li key={annonce.id} className="border p-4 rounded">
+            <h2 className="text-xl font-semibold mb-2">
               {annonce.titre} - {annonce.prix}€
             </h2>
-            <p>{annonce.description}</p>
+            {annonce.photos && annonce.photos.length > 0 && (
+              <img
+                src={annonce.photos[0]}
+                alt={annonce.titre}
+                className="w-full h-48 object-cover mb-2"
+              />
+            )}
+            <p className="mb-1">{annonce.description}</p>
+            <p className="mb-1">{annonce.adresse}, {annonce.ville}</p>
+            <p className="mb-1">
+              Disponibilités: {annonce.disponibilite.join(', ')}
+            </p>
+            <p className="mb-1">Type de poste: {annonce.type_poste}</p>
           </li>
         ))}
       </ul>
