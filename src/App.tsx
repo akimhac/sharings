@@ -1,35 +1,29 @@
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import CreerAnnonce from './pages/CreerAnnonce';
 import RechercheAnnonces from './pages/RechercheAnnonces';
+import NotFound from './pages/NotFound';
+import NavBar from './components/NavBar';
 import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
+export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route
-        path="/creer-annonce"
-        element={
-          <ProtectedRoute role="salon">
-            <CreerAnnonce />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/recherche"
-        element={
-          <ProtectedRoute role="independant">
-            <RechercheAnnonces />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute allow={['salon']} />}>
+          <Route path="/creer-annonce" element={<CreerAnnonce />} />
+        </Route>
+        <Route element={<ProtectedRoute allow={['independant']} />}>
+          <Route path="/recherche" element={<RechercheAnnonces />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
-
-export default App;

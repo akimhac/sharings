@@ -1,138 +1,107 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../lib/AuthProvider';
+import { supabase } from '../supabase';
+import toast, { Toaster } from 'react-hot-toast';
 
-const CreerAnnonce = () => {
-  const { user } = useAuth();
-  const [formData, setFormData] = useState({
-    titre: '',
-    description: '',
-    adresse: '',
-    ville: '',
-    disponibilite: '',
-    prix: '',
-    type_poste: '',
-    photos: '',
-  });
-  const [status, setStatus] = useState<string | null>(null);
+const DISPONIBILITES = ['Lundi matin', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+export default function CreerAnnonce() {
+  const [titre, setTitre] = useState('');
+  const [description, setDescription] = useState('');
+  const [adresse, setAdresse] = useState('');
+  const [ville, setVille] = useState('');
+  const [disponibilite, setDisponibilite] = useState<string[]>([]);
+  const [prix, setPrix] = useState('');
+  const [typePoste, setTypePoste] = useState('coiffeur');
+  const [photos, setPhotos] = useState('');
+
+  const toggleDispo = (d: string) => {
+    setDisponibilite(prev => (prev.includes(d) ? prev.filter(v => v !== d) : [...prev, d]));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('Utilisateur non connecté');
+      return;
+    }
     const { error } = await supabase.from('annonces').insert({
       user_id: user.id,
-      titre: formData.titre,
-      description: formData.description,
-      adresse: formData.adresse,
-      ville: formData.ville,
-      disponibilite: formData.disponibilite
-        .split(',')
-        .map((d) => d.trim()),
-      prix: parseFloat(formData.prix),
-      type_poste: formData.type_poste,
-      photos: formData.photos.split(',').map((p) => p.trim()),
+      titre,
+      description,
+      adresse,
+      ville,
+      disponibilite,
+      prix: Number(prix),
+      type_poste: typePoste,
+      photos: photos.split('\n').filter(Boolean),
     });
-
-    if (error) {
-      setStatus(`Erreur : ${error.message}`);
-    } else {
-      setStatus('Annonce créée avec succès');
-      setFormData({
-        titre: '',
-        description: '',
-        adresse: '',
-        ville: '',
-        disponibilite: '',
-        prix: '',
-        type_poste: '',
-        photos: '',
-      });
+    if (error) toast.error(error.message);
+    else {
+      toast.success('Annonce créée');
+      setTitre('');
+      setDescription('');
+      setAdresse('');
+      setVille('');
+      setDisponibilite([]);
+      setPrix('');
+      setTypePoste('coiffeur');
+      setPhotos('');
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Créer une annonce</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="titre"
-          value={formData.titre}
-          onChange={handleChange}
-          placeholder="Titre"
-          className="input"
-        />
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="input"
-        />
-        <input
-          type="text"
-          name="adresse"
-          value={formData.adresse}
-          onChange={handleChange}
-          placeholder="Adresse"
-          className="input"
-        />
-        <input
-          type="text"
-          name="ville"
-          value={formData.ville}
-          onChange={handleChange}
-          placeholder="Ville"
-          className="input"
-        />
-        <input
-          type="text"
-          name="disponibilite"
-          value={formData.disponibilite}
-          onChange={handleChange}
-          placeholder="Disponibilités (séparées par des virgules)"
-          className="input"
-        />
-        <input
-          type="number"
-          name="prix"
-          value={formData.prix}
-          onChange={handleChange}
-          placeholder="Prix"
-          className="input"
-        />
-        <input
-          type="text"
-          name="type_poste"
-          value={formData.type_poste}
-          onChange={handleChange}
-          placeholder="Type de poste"
-          className="input"
-        />
-        <input
-          type="text"
-          name="photos"
-          value={formData.photos}
-          onChange={handleChange}
-          placeholder="URLs des photos (séparées par des virgules)"
-          className="input"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Créer
-        </button>
+    <div className="max-w-2xl mx-auto mt-8 card">
+      <Toaster />
+      <h1 className="text-2xl mb-4 font-playfair">Créer une annonce</h1>
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label className="block mb-1">Titre</label>
+          <input className="input" value={titre} onChange={e => setTitre(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block mb-1">Description</label>
+          <textarea className="input h-24" value={description} onChange={e => setDescription(e.target.value)} />
+        </div>
+        <div>
+          <label className="block mb-1">Adresse</label>
+          <input className="input" value={adresse} onChange={e => setAdresse(e.target.value)} />
+        </div>
+        <div>
+          <label className="block mb-1">Ville</label>
+          <input className="input" value={ville} onChange={e => setVille(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block mb-1">Disponibilités</label>
+          <div className="flex flex-wrap gap-2">
+            {DISPONIBILITES.map(d => (
+              <label key={d} className="flex items-center gap-1">
+                <input type="checkbox" checked={disponibilite.includes(d)} onChange={() => toggleDispo(d)} />
+                <span>{d}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="block mb-1">Prix (€/jour)</label>
+          <input className="input" type="number" value={prix} onChange={e => setPrix(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block mb-1">Type de poste</label>
+          <select className="input" value={typePoste} onChange={e => setTypePoste(e.target.value)}>
+            <option value="coiffeur">Coiffeur</option>
+            <option value="barbier">Barbier</option>
+            <option value="esthétique">Esthétique</option>
+          </select>
+        </div>
+        <div>
+          <label className="block mb-1">Photos (URLs, une par ligne)</label>
+          <textarea className="input h-24" value={photos} onChange={e => setPhotos(e.target.value)} />
+        </div>
+        <button type="submit" className="btn btn-primary w-full">Publier</button>
       </form>
-      {status && <p className="mt-4">{status}</p>}
     </div>
   );
-};
-
-export default CreerAnnonce;
+}
