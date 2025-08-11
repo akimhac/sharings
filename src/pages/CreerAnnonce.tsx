@@ -1,80 +1,64 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
+import Button from '../components/Button';
+import { supabase } from '../supabase';
 
-const CreerAnnonce = () => {
-  const [formData, setFormData] = useState({
+export default function CreerAnnonce() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
     titre: '',
     description: '',
+    adresse: '',
     ville: '',
-    prix: ''
+    disponibilite: '',
+    prix: '',
+    type_poste: '',
+    photos: '',
   });
-  const [status, setStatus] = useState<string | null>(null);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  // Restrict access to salons
+  React.useEffect(() => {
+    supabase
+      .from('user_profiles')
+      .select('type_utilisateur')
+      .single()
+      .then(({ data }) => {
+        if (data?.type_utilisateur !== 'salon') navigate('/');
+      });
+  }, [navigate]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await supabase
-      .from('annonces')
-      .insert([{ ...formData, prix: parseFloat(formData.prix) }]);
-
-    if (error) {
-      setStatus(`Erreur : ${error.message}`);
-    } else {
-      setStatus('Annonce créée avec succès');
-      setFormData({ titre: '', description: '', ville: '', prix: '' });
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from('annonces').insert({
+      user_id: user.id,
+      titre: form.titre,
+      description: form.description,
+      adresse: form.adresse,
+      ville: form.ville,
+      disponibilite: form.disponibilite.split(',').map((s) => s.trim()),
+      prix: Number(form.prix),
+      type_poste: form.type_poste,
+      photos: form.photos.split(',').map((s) => s.trim()),
+    });
+    navigate('/dashboard-salon');
   };
-
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Créer une annonce</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="titre"
-          value={formData.titre}
-          onChange={handleChange}
-          placeholder="Titre"
-          className="w-full border rounded p-2"
-        />
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="w-full border rounded p-2"
-        />
-        <input
-          type="text"
-          name="ville"
-          value={formData.ville}
-          onChange={handleChange}
-          placeholder="Ville"
-          className="w-full border rounded p-2"
-        />
-        <input
-          type="number"
-          name="prix"
-          value={formData.prix}
-          onChange={handleChange}
-          placeholder="Prix"
-          className="w-full border rounded p-2"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Créer
-        </button>
+    <Layout>
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-2 py-10">
+        <input className="input" name="titre" placeholder="Titre" value={form.titre} onChange={handleChange} />
+        <textarea className="input" name="description" placeholder="Description" value={form.description} onChange={handleChange} />
+        <input className="input" name="adresse" placeholder="Adresse" value={form.adresse} onChange={handleChange} />
+        <input className="input" name="ville" placeholder="Ville" value={form.ville} onChange={handleChange} />
+        <input className="input" name="disponibilite" placeholder="Disponibilités (CSV)" value={form.disponibilite} onChange={handleChange} />
+        <input className="input" name="prix" type="number" placeholder="Prix" value={form.prix} onChange={handleChange} />
+        <input className="input" name="type_poste" placeholder="Type de poste" value={form.type_poste} onChange={handleChange} />
+        <input className="input" name="photos" placeholder="Photos URLs (CSV)" value={form.photos} onChange={handleChange} />
+        <Button type="submit" className="w-full">Créer</Button>
       </form>
-      {status && <p className="mt-4">{status}</p>}
-    </div>
+    </Layout>
   );
-};
-
-export default CreerAnnonce;
+}

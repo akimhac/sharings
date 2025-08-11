@@ -1,59 +1,46 @@
-import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Layout from '../components/Layout';
+import Button from '../components/Button';
+import Card from '../components/Card';
+import { supabase } from '../supabase';
 
-type Annonce = {
-  id: number;
+interface Annonce {
+  id: string;
   titre: string;
-  description: string;
   ville: string;
   prix: number;
-};
+}
 
-const RechercheAnnonces = () => {
+export default function RechercheAnnonces() {
   const [ville, setVille] = useState('');
   const [annonces, setAnnonces] = useState<Annonce[]>([]);
 
   const rechercher = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('annonces')
-      .select('*')
-      .eq('ville', ville);
-
-    if (!error && data) {
-      setAnnonces(data as Annonce[]);
-    }
+      .select('id,titre,ville,prix')
+      .ilike('ville', `%${ville}%`);
+    setAnnonces(data || []);
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Rechercher des annonces</h1>
-      <div className="space-y-4">
-        <input
-          type="text"
-          value={ville}
-          onChange={(e) => setVille(e.target.value)}
-          placeholder="Ville"
-          className="w-full border rounded p-2"
-        />
-        <button
-          onClick={rechercher}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Rechercher
-        </button>
+    <Layout>
+      <div className="py-10 space-y-4">
+        <div className="flex space-x-2">
+          <input className="input" value={ville} onChange={(e) => setVille(e.target.value)} placeholder="Ville" />
+          <Button onClick={rechercher}>Rechercher</Button>
+        </div>
+        <div className="grid gap-4">
+          {annonces.map((a) => (
+            <Card key={a.id}>
+              <h3 className="font-semibold">{a.titre}</h3>
+              <p>{a.ville} - {a.prix}€</p>
+              <Link to={`/annonce/${a.id}`} className="text-blue-600 underline">Voir</Link>
+            </Card>
+          ))}
+        </div>
       </div>
-      <ul className="mt-4 space-y-2">
-        {annonces.map((annonce) => (
-          <li key={annonce.id} className="border p-2 rounded">
-            <h2 className="font-semibold">
-              {annonce.titre} - {annonce.prix}€
-            </h2>
-            <p>{annonce.description}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    </Layout>
   );
-};
-
-export default RechercheAnnonces;
+}
