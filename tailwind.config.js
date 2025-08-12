@@ -4,14 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#C1121F',
-        secondary: '#1F4B99',
-        neutral: '#1F1F1F',
-        gold: '#D4AF37',
-        base: '#0F0F10',
+        primary: '#4a7fa7',
+        accent: '#e5a3b6',
+        base: '#1f1f1f',
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
         playfair: ['"Playfair Display"', 'serif'],
       },
       backgroundImage: {
