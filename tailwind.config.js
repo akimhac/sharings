@@ -1,12 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
+        base: '#1f1f1f',
         primary: '#4a7fa7',
         accent: '#e5a3b6',
-        base: '#1f1f1f',
+        success: '#22c55e',
+        error: '#ef4444',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
