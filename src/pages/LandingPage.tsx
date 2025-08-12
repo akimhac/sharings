@@ -1,108 +1,80 @@
-import { Link } from 'react-router-dom';
-import HeroIllustration from '../components/HeroIllustration';
+import React from "react";
+import CarouselPro from "../components/CarouselPro";
 
-export default function LandingPage() {
+const LandingPage: React.FC = () => {
+  const images = [
+    { src: "/images/event1.jpg", alt: "Événement professionnel" },
+    { src: "/images/event2.jpg", alt: "Mariage élégant" },
+    { src: "/images/event3.jpg", alt: "Soirée festive" },
+  ];
+
   return (
-    <div className="text-white">
-      <section className="section bg-base">
-        <div className="container-page grid items-center gap-10 sm:grid-cols-2">
-          <div className="space-y-6">
-            <h1 className="title-hero">Sharings — Trouvez une place, louez le bon poste.</h1>
-            <p className="text-lead">Simple, rapide et efficace.</p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/signup?role=salon" className="btn bg-accent text-white hover:opacity-90">Je suis un salon</Link>
-              <Link to="/signup?role=indep" className="btn-primary">Je suis indépendant</Link>
-            </div>
+    <div className="bg-base text-white">
+      {/* HERO */}
+      <section className="section grid lg:grid-cols-2 gap-10 items-center container-page">
+        <div className="space-y-6">
+          <h1 className="title-hero">
+            Trouvez les <span className="text-accent">meilleurs prestataires</span> pour vos événements
+          </h1>
+          <p className="text-lead">
+            Sharings connecte salons de coiffure, indépendants et organisateurs d’événements pour créer des
+            collaborations uniques et rentables.
+          </p>
+          <div className="flex gap-4">
+            <a href="/signup?type=salon" className="btn-primary">Je suis un Salon</a>
+            <a href="/signup?type=independant" className="btn-ghost">Je suis un Indépendant</a>
           </div>
-          <div className="hidden sm:block">
-            <HeroIllustration />
-          </div>
+        </div>
+        <div>
+          <CarouselPro images={images} intervalMs={4000} />
         </div>
       </section>
 
-      <section id="features" className="section">
-        <div className="container-page">
-          <h2 className="title-h2 text-center mb-10">Pourquoi Sharings</h2>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="card transition transform hover:scale-105">
-              <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
-              </svg>
-              <h3 className="mt-3 font-semibold">Gain de temps</h3>
-              <p className="text-sm text-white/80">Publiez ou trouvez un poste en quelques clics.</p>
-            </div>
-            <div className="card transition transform hover:scale-105">
-              <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              <h3 className="mt-3 font-semibold">Fiabilité</h3>
-              <p className="text-sm text-white/80">Des profils vérifiés pour des échanges sereins.</p>
-            </div>
-            <div className="card transition transform hover:scale-105">
-              <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-3.866 0-7 2.239-7 5s3.134 5 7 5 7-2.239 7-5-3.134-5-7-5zm0-5v5" />
-              </svg>
-              <h3 className="mt-3 font-semibold">Visibilité</h3>
-              <p className="text-sm text-white/80">Attirez ou trouvez rapidement les professionnels autour de vous.</p>
-            </div>
+      {/* POURQUOI SHARINGS */}
+      <section id="features" className="section container-page grid sm:grid-cols-3 gap-6">
+        {[
+          { title: "Gagnez du temps", desc: "Des recherches simples, rapides et ciblées." },
+          { title: "Boostez vos revenus", desc: "Rentabilisez vos espaces ou services vacants." },
+          { title: "Sécurité assurée", desc: "Des échanges sécurisés et vérifiés." },
+        ].map((f, i) => (
+          <div key={i} className="card text-center">
+            <h3 className="title-h2 mb-2">{f.title}</h3>
+            <p className="text-white/70">{f.desc}</p>
           </div>
+        ))}
+      </section>
+
+      {/* COMMENT ÇA MARCHE */}
+      <section id="how" className="section container-page">
+        <h2 className="title-h2 mb-8 text-center">Comment ça marche ?</h2>
+        <div className="grid sm:grid-cols-3 gap-6">
+          {[
+            { step: "1", title: "Inscrivez-vous", desc: "Créez un compte en quelques secondes." },
+            { step: "2", title: "Publiez / Recherchez", desc: "Ajoutez une annonce ou trouvez un prestataire." },
+            { step: "3", title: "Collaborez", desc: "Finalisez vos accords en toute confiance." },
+          ].map((s, i) => (
+            <div key={i} className="card text-center">
+              <div className="chip mb-3">{s.step}</div>
+              <h3 className="title-h2 mb-2">{s.title}</h3>
+              <p className="text-white/70">{s.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section id="how" className="section bg-base">
-        <div className="container-page">
-          <h2 className="title-h2 text-center mb-10">Comment ça marche</h2>
-          <div className="flex flex-col lg:flex-row lg:justify-between gap-8">
-            <div className="flex flex-col items-center text-center flex-1">
-              <div className="chip mb-4">1</div>
-              <h3 className="font-semibold mb-2">Publiez votre besoin</h3>
-              <p className="text-sm text-white/80">Décrivez le poste recherché ou proposé.</p>
-            </div>
-            <div className="flex flex-col items-center text-center flex-1">
-              <div className="chip mb-4">2</div>
-              <h3 className="font-semibold mb-2">Recevez des offres</h3>
-              <p className="text-sm text-white/80">Discutez et comparez les propositions.</p>
-            </div>
-            <div className="flex flex-col items-center text-center flex-1">
-              <div className="chip mb-4">3</div>
-              <h3 className="font-semibold mb-2">Réservez un poste</h3>
-              <p className="text-sm text-white/80">Validez et commencez au bon moment.</p>
-            </div>
-          </div>
-        </div>
+      {/* CTA FINAL */}
+      <section className="section bg-primary text-white text-center">
+        <h2 className="title-h2 mb-4">Prêt à commencer ?</h2>
+        <p className="mb-6">Rejoignez la communauté Sharings et développez vos opportunités.</p>
+        <a href="/signup" className="btn bg-accent text-black hover:opacity-90">Créer un compte</a>
       </section>
 
-      <section className="section">
-        <div className="container-page flex flex-wrap justify-center gap-4">
-          <span className="chip">Sécurisé</span>
-          <span className="chip">Messagerie intégrée</span>
-          <span className="chip">Réservations simples</span>
-          <span className="chip">Support rapide</span>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container-page">
-          <div className="card text-center space-y-6">
-            <h2 className="title-h2">Prêt à vous lancer ?</h2>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/signup?role=salon" className="btn bg-accent text-white hover:opacity-90">Je suis un salon</Link>
-              <Link to="/signup?role=indep" className="btn-primary">Je suis indépendant</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer className="section bg-base">
-        <div className="container-page text-center space-y-4">
-          <nav className="flex justify-center gap-6 text-sm text-white/80">
-            <a href="#features" className="hover:underline">Fonctionnalités</a>
-            <a href="#how" className="hover:underline">Comment ça marche</a>
-            <Link to="/login" className="hover:underline">Se connecter</Link>
-          </nav>
-          <p className="text-sm text-white/60">© {new Date().getFullYear()} Sharings. Tous droits réservés.</p>
-        </div>
+      {/* FOOTER */}
+      <footer className="section bg-base/80 border-t border-white/10 text-center text-white/60 text-sm">
+        © {new Date().getFullYear()} Sharings — Tous droits réservés
       </footer>
     </div>
   );
-}
+};
+
+export default LandingPage;
