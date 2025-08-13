@@ -1,22 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  prefix: "sg-",
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        base: '#1f1f1f',
-        primary: '#4a7fa7',
-        accent: '#e5a3b6',
-        success: '#22c55e',
-        error: '#ef4444',
+        base: "#1f1f1f",
+        primary: "#4a7fa7",
+        accent: "#e5a3b6",
+        success: "#22c55e",
+        error: "#ef4444",
       },
       fontFamily: {
-        inter: ['Inter', 'sans-serif'],
-        playfair: ['"Playfair Display"', 'serif'],
+        sans: ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
       },
-      backgroundImage: {
-        'hero-gradient': 'radial-gradient(circle at center, #0F0F10 0%, #1F1F1F 100%)',
-      },
+      boxShadow: { soft: "0 8px 30px rgba(0,0,0,.15)" },
     },
   },
   plugins: [],
