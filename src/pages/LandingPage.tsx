@@ -1,80 +1,106 @@
-import React from "react";
+import Navbar from "../components/Navbar";
 import CarouselPro from "../components/CarouselPro";
+import { HERO_IMAGES } from "../assets/images";
+import { Link } from "react-router-dom";
 
-const LandingPage: React.FC = () => {
-  const images = [
-    { src: "/images/event1.jpg", alt: "Événement professionnel" },
-    { src: "/images/event2.jpg", alt: "Mariage élégant" },
-    { src: "/images/event3.jpg", alt: "Soirée festive" },
-  ];
-
+export default function LandingPage() {
   return (
-    <div className="bg-base text-white">
+    <>
+      <Navbar />
+
       {/* HERO */}
-      <section className="section grid lg:grid-cols-2 gap-10 items-center container-page">
-        <div className="space-y-6">
-          <h1 className="title-hero">
-            Trouvez les <span className="text-accent">meilleurs prestataires</span> pour vos événements
-          </h1>
-          <p className="text-lead">
-            Sharings connecte salons de coiffure, indépendants et organisateurs d’événements pour créer des
-            collaborations uniques et rentables.
-          </p>
-          <div className="flex gap-4">
-            <a href="/signup?type=salon" className="btn-primary">Je suis un Salon</a>
-            <a href="/signup?type=independant" className="btn-ghost">Je suis un Indépendant</a>
-          </div>
-        </div>
-        <div>
-          <CarouselPro images={images} intervalMs={4000} />
-        </div>
-      </section>
-
-      {/* POURQUOI SHARINGS */}
-      <section id="features" className="section container-page grid sm:grid-cols-3 gap-6">
-        {[
-          { title: "Gagnez du temps", desc: "Des recherches simples, rapides et ciblées." },
-          { title: "Boostez vos revenus", desc: "Rentabilisez vos espaces ou services vacants." },
-          { title: "Sécurité assurée", desc: "Des échanges sécurisés et vérifiés." },
-        ].map((f, i) => (
-          <div key={i} className="card text-center">
-            <h3 className="title-h2 mb-2">{f.title}</h3>
-            <p className="text-white/70">{f.desc}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* COMMENT ÇA MARCHE */}
-      <section id="how" className="section container-page">
-        <h2 className="title-h2 mb-8 text-center">Comment ça marche ?</h2>
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            { step: "1", title: "Inscrivez-vous", desc: "Créez un compte en quelques secondes." },
-            { step: "2", title: "Publiez / Recherchez", desc: "Ajoutez une annonce ou trouvez un prestataire." },
-            { step: "3", title: "Collaborez", desc: "Finalisez vos accords en toute confiance." },
-          ].map((s, i) => (
-            <div key={i} className="card text-center">
-              <div className="chip mb-3">{s.step}</div>
-              <h3 className="title-h2 mb-2">{s.title}</h3>
-              <p className="text-white/70">{s.desc}</p>
+      <section className="sg-section">
+        <div className="sg-container sg-grid sg-items-center sg-gap-10 lg:sg-grid-cols-12">
+          <div className="lg:sg-col-span-6">
+            <h1 className="sg-title-hero sg-max-w-[16ch] sg-font-serif">
+              Trouvez les <span className="sg-text-accent">meilleurs prestataires</span> pour vos événements
+            </h1>
+            <p className="sg-text-lead sg-mt-4 sg-max-w-prose">
+              Sharings connecte salons de coiffure, indépendants et organisateurs d’événements pour créer des collaborations uniques et rentables.
+            </p>
+            <div className="sg-mt-6 sg-flex sg-flex-col sm:sg-flex-row sg-gap-3">
+              <Link to="/signup?role=salon" className="sg-btn-primary">Je suis un Salon</Link>
+              <Link to="/signup?role=indep" className="sg-btn-ghost">Je suis un Indépendant</Link>
             </div>
-          ))}
+            <div className="sg-mt-6 sg-flex sg-flex-wrap sg-gap-2">
+              <span className="sg-chip">Réservations simples</span>
+              <span className="sg-chip">Messagerie intégrée</span>
+              <span className="sg-chip">Support rapide</span>
+            </div>
+          </div>
+
+          <div className="lg:sg-col-span-6">
+            <CarouselPro images={HERO_IMAGES} intervalMs={5000} />
+          </div>
         </div>
       </section>
 
-      {/* CTA FINAL */}
-      <section className="section bg-primary text-white text-center">
-        <h2 className="title-h2 mb-4">Prêt à commencer ?</h2>
-        <p className="mb-6">Rejoignez la communauté Sharings et développez vos opportunités.</p>
-        <a href="/signup" className="btn bg-accent text-black hover:opacity-90">Créer un compte</a>
+      {/* FEATURES */}
+      <section id="features" className="sg-section">
+        <div className="sg-container">
+          <h2 className="sg-title-h2">Pourquoi Sharings</h2>
+          <div className="sg-mt-8 sg-grid sg-gap-5 sm:sg-grid-cols-2 lg:sg-grid-cols-3">
+            {[
+              { t: "Gagnez du temps", d: "Des recherches simples, rapides et ciblées." },
+              { t: "Boostez vos revenus", d: "Rentabilisez vos espaces ou services vacants." },
+              { t: "Sécurité assurée", d: "Des échanges sécurisés et vérifiés." },
+            ].map((c, i) => (
+              <div key={i} className="sg-card hover:sg-scale-[1.01] sg-transition-transform">
+                <div className="sg-mb-3 sg-text-accent">★</div>
+                <h3 className="sg-font-semibold sg-text-lg">{c.t}</h3>
+                <p className="sg-mt-2 sg-text-white/80">{c.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="section bg-base/80 border-t border-white/10 text-center text-white/60 text-sm">
-        © {new Date().getFullYear()} Sharings — Tous droits réservés
-      </footer>
-    </div>
-  );
-};
+      {/* HOW */}
+      <section id="how" className="sg-section">
+        <div className="sg-container">
+          <h2 className="sg-title-h2">Comment ça marche</h2>
+          <ol className="sg-mt-8 sg-grid sg-gap-5 sm:sg-grid-cols-3">
+            {[
+              { n: 1, t: "Inscrivez-vous", d: "Créez un compte en quelques secondes." },
+              { n: 2, t: "Publiez / Recherchez", d: "Ajoutez une annonce ou trouvez un prestataire." },
+              { n: 3, t: "Collaborez", d: "Finalisez vos accords en toute confiance." },
+            ].map(step => (
+              <li key={step.n} className="sg-card sg-relative">
+                <span className="sg-absolute -sg-top-3 -sg-left-3 sg-h-8 sg-w-8 sg-rounded-full sg-bg-accent sg-text-base sg-flex sg-items-center sg-justify-center sg-font-bold"> {step.n} </span>
+                <h3 className="sg-font-semibold sg-text-lg">{step.t}</h3>
+                <p className="sg-mt-2 sg-text-white/80">{step.d}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
-export default LandingPage;
+      {/* CTA */}
+      <section className="sg-section">
+        <div className="sg-container">
+          <div className="sg-card sg-flex sg-flex-col sg-items-start sg-justify-between sg-gap-6 sm:sg-flex-row sm:sg-items-center">
+            <div>
+              <h3 className="sg-text-2xl sg-font-semibold">Prêt à commencer ?</h3>
+              <p className="sg-text-white/80 sg-mt-1">Créez votre compte en moins d’une minute.</p>
+            </div>
+            <div className="sg-flex sg-gap-3">
+              <Link to="/signup?role=salon" className="sg-btn-primary">Je suis un Salon</Link>
+              <Link to="/signup?role=indep" className="sg-btn-ghost">Je suis un Indépendant</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="sg-border-t sg-border-white/10 sg-py-8 sg-text-white/70">
+        <div className="sg-container sg-flex sg-flex-col sm:sg-flex-row sg-items-center sg-justify-between sg-gap-4">
+          <p>© {new Date().getFullYear()} Sharings — Tous droits réservés.</p>
+          <nav className="sg-flex sg-gap-4">
+            <a href="#features" className="hover:sg-text-white">Fonctionnalités</a>
+            <a href="#how" className="hover:sg-text-white">Comment ça marche</a>
+            <Link to="/login" className="hover:sg-text-white">Se connecter</Link>
+          </nav>
+        </div>
+      </footer>
+    </>
+  );
+}

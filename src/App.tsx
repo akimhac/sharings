@@ -1,14 +1,22 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import LandingPage from "./pages/LandingPage";
-import Navbar from "./components/Navbar";
 
-const Login = () => <div>Login Page</div>;
-const Signup = () => <div>Signup Page</div>;
+function ScrollToHash() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
+  }, [hash]);
+  return null;
+}
+
+const Login = () => <div className="sg-section sg-container">Login</div>;
+const Signup = () => <div className="sg-section sg-container">Signup</div>;
 
 export default function App() {
   return (
     <>
-      <Navbar />
+      <ScrollToHash />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
