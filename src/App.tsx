@@ -1,6 +1,9 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 function ScrollToHash() {
   const { hash } = useLocation();
@@ -10,17 +13,15 @@ function ScrollToHash() {
   return null;
 }
 
-const Login = () => <div className="sg-section sg-container">Login</div>;
-const Signup = () => <div className="sg-section sg-container">Signup</div>;
-
 export default function App() {
   return (
     <>
       <ScrollToHash />
+      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Routes>
     </>
   );
