@@ -5,11 +5,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        base: "#1f1f1f",
-        primary: "#4a7fa7",
-        accent: "#e5a3b6",
+        base: "#ffffff",
+        primary: "#0055a4",
+        accent: "#ef4135",
         success: "#22c55e",
-        error: "#ef4444",
+        error: "#ef4135",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
