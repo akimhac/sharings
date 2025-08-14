@@ -49,12 +49,12 @@ export default function CarouselPro({
 
   return (
     <section
-      className={`sg-relative sg-overflow-hidden sg-rounded-2xl sg-border sg-border-white/10 ${className}`}
+      className={`sg-relative sg-overflow-hidden sg-rounded-2xl sg-border sg-border-black/10 ${className}`}
       aria-roledescription="carousel"
       aria-label="Galerie d'images"
       onKeyDown={(e) => { if (e.key === "ArrowRight") go(i + 1); if (e.key === "ArrowLeft") go(i - 1); }}
     >
-      {loading && <div className={`sg-absolute sg-inset-0 ${heightClass} sg-animate-pulse sg-bg-white/[.06]`} />}
+      {loading && <div className={`sg-absolute sg-inset-0 ${heightClass} sg-animate-pulse sg-bg-black/[.06]`} />}
 
       <div className="sg-relative sg-select-none" tabIndex={0} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <picture>
@@ -86,7 +86,7 @@ export default function CarouselPro({
         {images.length > 1 && (
           <div className="sg-absolute sg-bottom-3 sg-left-0 sg-right-0 sg-flex sg-justify-center sg-gap-2">
             {images.map((_, k) => (
-              <button key={k} aria-label={`Aller à l'image ${k + 1}`} onClick={() => go(k)} className={`sg-h-2.5 sg-w-2.5 sg-rounded-full ${k === i ? "sg-bg-white" : "sg-bg-white/50"}`} />
+              <button key={k} aria-label={`Aller à l'image ${k + 1}`} onClick={() => go(k)} className={`sg-h-2.5 sg-w-2.5 sg-rounded-full ${k === i ? "sg-bg-primary" : "sg-bg-primary/50"}`} />
             ))}
           </div>
         )}

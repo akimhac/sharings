@@ -7,7 +7,7 @@
 */
 
 html { scroll-behavior: smooth; }
-body { @apply sg-bg-base sg-text-white sg-font-sans sg-antialiased; }
+body { @apply sg-bg-base sg-text-black sg-font-sans sg-antialiased; }
 
 /* utilitaires namespacés (aucun conflit) */
 @layer utilities {
@@ -15,10 +15,10 @@ body { @apply sg-bg-base sg-text-white sg-font-sans sg-antialiased; }
   .sg-section { @apply sg-py-10 sm:sg-py-14 lg:sg-py-20; }
   .sg-title-hero { font-size: clamp(2.2rem, 6vw, 4.25rem); @apply sg-font-bold sg-leading-tight; }
   .sg-title-h2 { font-size: clamp(1.5rem, 4.2vw, 2.25rem); @apply sg-font-semibold; }
-  .sg-text-lead { @apply sg-text-base sm:sg-text-lg sg-text-white/80; }
-  .sg-card { @apply sg-rounded-2xl sg-border sg-border-white/10 sg-bg-white/5 sg-backdrop-blur sg-p-5 sm:sg-p-6 sg-shadow-lg; }
-  .sg-btn { @apply sg-inline-flex sg-items-center sg-justify-center sg-rounded-xl sg-px-5 sg-py-3 sg-font-medium sg-min-h-[48px] sg-transition focus:sg-outline-none focus:sg-ring-2 focus:sg-ring-white/30; }
+  .sg-text-lead { @apply sg-text-base sm:sg-text-lg sg-text-black/80; }
+  .sg-card { @apply sg-rounded-2xl sg-border sg-border-black/10 sg-bg-black/5 sg-backdrop-blur sg-p-5 sm:sg-p-6 sg-shadow-lg; }
+  .sg-btn { @apply sg-inline-flex sg-items-center sg-justify-center sg-rounded-xl sg-px-5 sg-py-3 sg-font-medium sg-min-h-[48px] sg-transition focus:sg-outline-none focus:sg-ring-2 focus:sg-ring-primary/30; }
   .sg-btn-primary { @apply sg-btn sg-bg-primary sg-text-white hover:sg-opacity-90 active:sg-opacity-80; }
-  .sg-btn-ghost { @apply sg-btn sg-border sg-border-white/20 sg-text-white hover:sg-bg-white/5; }
-  .sg-chip { @apply sg-inline-flex sg-items-center sg-rounded-full sg-px-3 sg-py-1 sg-text-sm sg-border sg-border-white/10 sg-bg-white/5; }
+  .sg-btn-ghost { @apply sg-btn sg-border sg-border-primary/20 sg-text-primary hover:sg-bg-primary/5; }
+  .sg-chip { @apply sg-inline-flex sg-items-center sg-rounded-full sg-px-3 sg-py-1 sg-text-sm sg-border sg-border-black/10 sg-bg-black/5; }
 }

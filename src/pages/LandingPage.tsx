@@ -48,7 +48,7 @@ export default function LandingPage() {
               <div key={i} className="sg-card hover:sg-scale-[1.01] sg-transition-transform">
                 <div className="sg-mb-3 sg-text-accent">★</div>
                 <h3 className="sg-font-semibold sg-text-lg">{c.t}</h3>
-                <p className="sg-mt-2 sg-text-white/80">{c.d}</p>
+                <p className="sg-mt-2 sg-text-black/80">{c.d}</p>
               </div>
             ))}
           </div>
@@ -68,7 +68,7 @@ export default function LandingPage() {
               <li key={step.n} className="sg-card sg-relative">
                 <span className="sg-absolute -sg-top-3 -sg-left-3 sg-h-8 sg-w-8 sg-rounded-full sg-bg-accent sg-text-base sg-flex sg-items-center sg-justify-center sg-font-bold"> {step.n} </span>
                 <h3 className="sg-font-semibold sg-text-lg">{step.t}</h3>
-                <p className="sg-mt-2 sg-text-white/80">{step.d}</p>
+                <p className="sg-mt-2 sg-text-black/80">{step.d}</p>
               </li>
             ))}
           </ol>
@@ -81,7 +81,7 @@ export default function LandingPage() {
           <div className="sg-card sg-flex sg-flex-col sg-items-start sg-justify-between sg-gap-6 sm:sg-flex-row sm:sg-items-center">
             <div>
               <h3 className="sg-text-2xl sg-font-semibold">Prêt à commencer ?</h3>
-              <p className="sg-text-white/80 sg-mt-1">Créez votre compte en moins d’une minute.</p>
+              <p className="sg-text-black/80 sg-mt-1">Créez votre compte en moins d’une minute.</p>
             </div>
             <div className="sg-flex sg-gap-3">
               <Link to="/signup?role=salon" className="sg-btn-primary">Je suis un Salon</Link>
@@ -91,13 +91,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="sg-border-t sg-border-white/10 sg-py-8 sg-text-white/70">
+      <footer className="sg-border-t sg-border-black/10 sg-py-8 sg-text-black/70">
         <div className="sg-container sg-flex sg-flex-col sm:sg-flex-row sg-items-center sg-justify-between sg-gap-4">
           <p>© {new Date().getFullYear()} Sharings — Tous droits réservés.</p>
           <nav className="sg-flex sg-gap-4">
-            <a href="#features" className="hover:sg-text-white">Fonctionnalités</a>
-            <a href="#how" className="hover:sg-text-white">Comment ça marche</a>
-            <Link to="/login" className="hover:sg-text-white">Se connecter</Link>
+            <a href="#features" className="hover:sg-text-primary">Fonctionnalités</a>
+            <a href="#how" className="hover:sg-text-primary">Comment ça marche</a>
+            <Link to="/login" className="hover:sg-text-primary">Se connecter</Link>
           </nav>
         </div>
       </footer>
