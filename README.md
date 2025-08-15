@@ -1,6 +1,6 @@
 # Sharings
 
-Marketplace reliant salons de coiffure/esthétique et indépendants.
+Marketplace reliant salons de coiffure/esthétique et indépendants avec réservation de sièges, messagerie et création de contrat.
 
 ## Installation
 
@@ -75,6 +75,9 @@ Configurer l'onglet **Auth** avec les URL de redirection `http://localhost:5173`
 - `/login` / `/register`
 - `/creer-annonce` réservé aux salons
 - `/recherche` réservé aux indépendants
+- `/reservations` : planning de réservation de siège
+- `/messages` : messagerie simple
+- `/contrat` : génération de contrat
 
 ## Types
 - `salon` : peut créer des annonces

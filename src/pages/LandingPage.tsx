@@ -12,20 +12,20 @@ export default function LandingPage() {
       <section className="sg-section">
         <div className="sg-container sg-grid sg-items-center sg-gap-10 lg:sg-grid-cols-12">
           <div className="lg:sg-col-span-6">
-            <h1 className="sg-title-hero sg-max-w-[16ch] sg-font-serif">
-              Trouvez les <span className="sg-text-accent">meilleurs prestataires</span> pour vos événements
+            <h1 className="sg-title-hero sg-max-w-[18ch] sg-font-serif">
+              Réservez votre siège et trouvez les <span className="sg-text-accent">meilleurs prestataires</span>
             </h1>
             <p className="sg-text-lead sg-mt-4 sg-max-w-prose">
-              Sharings connecte salons de coiffure, indépendants et organisateurs d’événements pour créer des collaborations uniques et rentables.
+              Sharings connecte instituts, indépendants et organisateurs d’événements pour louer des places disponibles et créer des collaborations uniques et rentables.
             </p>
             <div className="sg-mt-6 sg-flex sg-flex-col sm:sg-flex-row sg-gap-3">
               <Link to="/signup?role=salon" className="sg-btn-primary">Je suis un Salon</Link>
               <Link to="/signup?role=indep" className="sg-btn-ghost">Je suis un Indépendant</Link>
             </div>
             <div className="sg-mt-6 sg-flex sg-flex-wrap sg-gap-2">
-              <span className="sg-chip">Réservations simples</span>
+              <span className="sg-chip">Réservation de sièges</span>
               <span className="sg-chip">Messagerie intégrée</span>
-              <span className="sg-chip">Support rapide</span>
+              <span className="sg-chip">Contrats simplifiés</span>
             </div>
           </div>
 
