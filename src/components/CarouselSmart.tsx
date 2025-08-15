@@ -1,107 +1,82 @@
 import { useEffect, useRef, useState } from "react";
-import { landingImages, LandingImage, FALLBACK_IMAGE } from "../assets/landingImages";
 
-interface CarouselSmartProps {
-  images?: LandingImage[];
-}
+type Img = { src: string; alt: string; srcSet?: string; sizes?: string };
 
-export default function CarouselSmart({ images = landingImages }: CarouselSmartProps) {
-  const [index, setIndex] = useState(0);
+export default function CarouselSmart({
+  images,
+  intervalMs = 5000,
+  className = "",
+  heightClass = "h-64 sm:h-80 lg:h-[28rem]",
+}: {
+  images: Img[]; intervalMs?: number; className?: string; heightClass?: string;
+}) {
+  const [i, setI] = useState(0);
   const [loading, setLoading] = useState(true);
-  const intervalRef = useRef<number>();
-  const touchStart = useRef<number | null>(null);
+  const timer = useRef<number | null>(null);
+  const startX = useRef<number | null>(null);
 
-  const next = () => setIndex((i) => (i + 1) % images.length);
-  const prev = () => setIndex((i) => (i - 1 + images.length) % images.length);
+  const go = (n: number) => setI((n + images.length) % images.length);
 
-  // autoplay
   useEffect(() => {
-    intervalRef.current = window.setInterval(next, 5000);
-    return () => {
-      if (intervalRef.current) window.clearInterval(intervalRef.current);
-    };
-  }, []);
+    if (!intervalMs || images.length < 2) return;
+    timer.current = window.setInterval(() => go(i + 1), intervalMs);
+    return () => { if (timer.current) window.clearInterval(timer.current); };
+  }, [i, intervalMs, images.length]);
 
-  // reset loading on slide change
-  useEffect(() => setLoading(true), [index]);
-
-  // keyboard navigation
-  const handleKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "ArrowRight") next();
-    if (e.key === "ArrowLeft") prev();
+  const onTouchStart = (e: React.TouchEvent) => { startX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (startX.current == null) return;
+    const dx = e.changedTouches[0].clientX - startX.current;
+    if (Math.abs(dx) > 40) go(i + (dx < 0 ? 1 : -1));
+    startX.current = null;
   };
 
-  // touch navigation
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStart.current = e.touches[0].clientX;
-  };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const start = touchStart.current;
-    if (start !== null) {
-      const diff = start - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 50) {
-        diff > 0 ? next() : prev();
-      }
-    }
-    touchStart.current = null;
-  };
+  const cur = images[i];
 
   return (
-    <div
-      className="relative w-full overflow-hidden rounded-xl"
-      role="region"
+    <section
+      className={`relative overflow-hidden rounded-2xl border border-white/10 ${className}`}
       aria-roledescription="carousel"
       aria-label="Galerie"
+      onKeyDown={(e) => { if (e.key === "ArrowRight") go(i + 1); if (e.key === "ArrowLeft") go(i - 1); }}
       tabIndex={0}
-      onKeyDown={handleKey}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
-      {images.map((img, i) => (
-        <div
-          key={i}
-          className={`absolute inset-0 transition-opacity duration-500 ${i === index ? "opacity-100" : "opacity-0"}`}
-        >
-          {loading && i === index && <div className="skeleton absolute inset-0" />}
+      {loading && <div className={`absolute inset-0 ${heightClass} animate-pulse bg-white/[.06]`} />}
+
+      <div className="relative select-none" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        <picture>
+          {cur.srcSet && <source srcSet={cur.srcSet} sizes={cur.sizes ?? "(min-width:1024px) 800px, 100vw"} />}
           <img
-            src={img.src}
-            srcSet={img.srcSet}
-            sizes="(max-width: 768px) 100vw, 600px"
-            alt={img.alt}
-            className="h-full w-full object-cover"
+            key={i}
+            src={cur.src}
+            alt={cur.alt}
+            loading="eager"
+            decoding="async"
+            className={`${heightClass} w-full object-cover transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}
             onLoad={() => setLoading(false)}
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = FALLBACK_IMAGE;
+              (e.target as HTMLImageElement).style.background = "linear-gradient(135deg,#2b2b2b,#1f1f1f)";
+              setLoading(false);
             }}
+            width={1600} height={900}
           />
-        </div>
-      ))}
+        </picture>
 
-      <button
-        aria-label="Précédent"
-        onClick={prev}
-        className="btn absolute left-2 top-1/2 -translate-y-1/2 bg-base/70 text-ink hover:bg-base"
-      >
-        ‹
-      </button>
-      <button
-        aria-label="Suivant"
-        onClick={next}
-        className="btn absolute right-2 top-1/2 -translate-y-1/2 bg-base/70 text-ink hover:bg-base"
-      >
-        ›
-      </button>
+        {images.length > 1 && (
+          <>
+            <button aria-label="Précédent" className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 hover:bg-black/60" onClick={() => go(i - 1)}>‹</button>
+            <button aria-label="Suivant" className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 hover:bg-black/60" onClick={() => go(i + 1)}>›</button>
+          </>
+        )}
 
-      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 space-x-2">
-        {images.map((_, i) => (
-          <button
-            key={i}
-            aria-label={`Aller à l’image ${i + 1}`}
-            className={i === index ? "dot-active" : "dot"}
-            onClick={() => setIndex(i)}
-          />
-        ))}
+        {images.length > 1 && (
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
+            {images.map((_, k) => (
+              <button key={k} aria-label={`Aller à l'image ${k + 1}`} onClick={() => go(k)} className={`h-2.5 w-2.5 rounded-full ${k === i ? "bg-white" : "bg-white/50"}`} />
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }
