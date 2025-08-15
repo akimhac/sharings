@@ -7,12 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "seed:cities": "ts-node scripts/import_cities_fr.ts",
-    "seed:biz": "ts-node scripts/seed_businesses_demo.ts",
-    "seed:reset": "ts-node scripts/reset_demo_data.ts",
     "test:e2e": "playwright test",
     "test:api": "vitest run"
   },
+  "engines": { "node": ">=20.11.1" },
   "dependencies": {
     "@prisma/client": "^5.15.0",
     "@supabase/supabase-js": "^2.39.7",
