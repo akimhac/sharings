@@ -1,106 +1,86 @@
 import Navbar from "../components/Navbar";
-import CarouselPro from "../components/CarouselPro";
-import { HERO_IMAGES } from "../assets/images";
-import { Link } from "react-router-dom";
+import CarouselSmart from "../components/CarouselSmart";
 
 export default function LandingPage() {
   return (
-    <>
+    <div className="bg-base text-ink min-h-screen flex flex-col">
       <Navbar />
-
-      {/* HERO */}
-      <section className="sg-section">
-        <div className="sg-container sg-grid sg-items-center sg-gap-10 lg:sg-grid-cols-12">
-          <div className="lg:sg-col-span-6">
-            <h1 className="sg-title-hero sg-max-w-[18ch] sg-font-serif">
-              Réservez votre siège et trouvez les <span className="sg-text-accent">meilleurs prestataires</span>
-            </h1>
-            <p className="sg-text-lead sg-mt-4 sg-max-w-prose">
-              Sharings connecte instituts, indépendants et organisateurs d’événements pour louer des places disponibles et créer des collaborations uniques et rentables.
-            </p>
-            <div className="sg-mt-6 sg-flex sg-flex-col sm:sg-flex-row sg-gap-3">
-              <Link to="/signup?role=salon" className="sg-btn-primary">Je suis un Salon</Link>
-              <Link to="/signup?role=indep" className="sg-btn-ghost">Je suis un Indépendant</Link>
-            </div>
-            <div className="sg-mt-6 sg-flex sg-flex-wrap sg-gap-2">
-              <span className="sg-chip">Réservation de sièges</span>
-              <span className="sg-chip">Messagerie intégrée</span>
-              <span className="sg-chip">Contrats simplifiés</span>
-            </div>
-          </div>
-
-          <div className="lg:sg-col-span-6">
-            <CarouselPro images={HERO_IMAGES} intervalMs={5000} />
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section id="features" className="sg-section">
-        <div className="sg-container">
-          <h2 className="sg-title-h2">Pourquoi Sharings</h2>
-          <div className="sg-mt-8 sg-grid sg-gap-5 sm:sg-grid-cols-2 lg:sg-grid-cols-3">
-            {[
-              { t: "Gagnez du temps", d: "Des recherches simples, rapides et ciblées." },
-              { t: "Boostez vos revenus", d: "Rentabilisez vos espaces ou services vacants." },
-              { t: "Sécurité assurée", d: "Des échanges sécurisés et vérifiés." },
-            ].map((c, i) => (
-              <div key={i} className="sg-card hover:sg-scale-[1.01] sg-transition-transform">
-                <div className="sg-mb-3 sg-text-accent">★</div>
-                <h3 className="sg-font-semibold sg-text-lg">{c.t}</h3>
-                <p className="sg-mt-2 sg-text-black/80">{c.d}</p>
+      <main className="flex-1 pt-20">
+        {/* Hero */}
+        <section className="section">
+          <div className="container grid items-center gap-8 lg:grid-cols-2">
+            <div className="space-y-6 text-center lg:text-left">
+              <h1 className="title-hero">Partagez vos espaces beauté.</h1>
+              <p className="text-lead">
+                Sharings connecte salons et indépendants pour optimiser chaque mètre carré.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <a href="#" className="btn-primary">Je suis un Salon</a>
+                <a href="#" className="btn-outline">Je suis un Indépendant</a>
               </div>
-            ))}
+            </div>
+            <CarouselSmart />
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* HOW */}
-      <section id="how" className="sg-section">
-        <div className="sg-container">
-          <h2 className="sg-title-h2">Comment ça marche</h2>
-          <ol className="sg-mt-8 sg-grid sg-gap-5 sm:sg-grid-cols-3">
-            {[
-              { n: 1, t: "Inscrivez-vous", d: "Créez un compte en quelques secondes." },
-              { n: 2, t: "Publiez / Recherchez", d: "Ajoutez une annonce ou trouvez un prestataire." },
-              { n: 3, t: "Collaborez", d: "Finalisez vos accords en toute confiance." },
-            ].map(step => (
-              <li key={step.n} className="sg-card sg-relative">
-                <span className="sg-absolute -sg-top-3 -sg-left-3 sg-h-8 sg-w-8 sg-rounded-full sg-bg-accent sg-text-base sg-flex sg-items-center sg-justify-center sg-font-bold"> {step.n} </span>
-                <h3 className="sg-font-semibold sg-text-lg">{step.t}</h3>
-                <p className="sg-mt-2 sg-text-black/80">{step.d}</p>
+        {/* Pourquoi Sharings */}
+        <section id="features" className="section bg-surface">
+          <div className="container">
+            <h2 className="title-h2 mb-12 text-center">Pourquoi Sharings</h2>
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="card text-center">
+                <h3 className="font-serif text-xl mb-2">Rentabilisez</h3>
+                <p className="text-sm text-ink/80">Optimisez vos postes vacants avec des indépendants qualifiés.</p>
+              </div>
+              <div className="card text-center">
+                <h3 className="font-serif text-xl mb-2">Flexibilité</h3>
+                <p className="text-sm text-ink/80">Réservez des créneaux adaptés à votre activité.</p>
+              </div>
+              <div className="card text-center">
+                <h3 className="font-serif text-xl mb-2">Communauté</h3>
+                <p className="text-sm text-ink/80">Rejoignez un réseau d'espaces et de professionnels de confiance.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Comment ça marche */}
+        <section id="how" className="section">
+          <div className="container">
+            <h2 className="title-h2 mb-12 text-center">Comment ça marche</h2>
+            <ol className="grid gap-8 md:grid-cols-3 text-center">
+              <li className="card">
+                <span className="text-4xl font-serif text-primary">1</span>
+                <p className="mt-4 text-sm text-ink/80">Créez votre profil salon ou indépendant.</p>
               </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+              <li className="card">
+                <span className="text-4xl font-serif text-primary">2</span>
+                <p className="mt-4 text-sm text-ink/80">Trouvez l'espace ou le professionnel idéal.</p>
+              </li>
+              <li className="card">
+                <span className="text-4xl font-serif text-primary">3</span>
+                <p className="mt-4 text-sm text-ink/80">Réservez et commencez à partager.</p>
+              </li>
+            </ol>
+          </div>
+        </section>
 
-      {/* CTA */}
-      <section className="sg-section">
-        <div className="sg-container">
-          <div className="sg-card sg-flex sg-flex-col sg-items-start sg-justify-between sg-gap-6 sm:sg-flex-row sm:sg-items-center">
-            <div>
-              <h3 className="sg-text-2xl sg-font-semibold">Prêt à commencer ?</h3>
-              <p className="sg-text-black/80 sg-mt-1">Créez votre compte en moins d’une minute.</p>
-            </div>
-            <div className="sg-flex sg-gap-3">
-              <Link to="/signup?role=salon" className="sg-btn-primary">Je suis un Salon</Link>
-              <Link to="/signup?role=indep" className="sg-btn-ghost">Je suis un Indépendant</Link>
+        {/* CTA final */}
+        <section id="cta" className="section bg-surface">
+          <div className="container text-center space-y-6">
+            <h2 className="title-h2">Prêt à rejoindre l'aventure ?</h2>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="#" className="btn-primary">Je suis un Salon</a>
+              <a href="#" className="btn-outline">Je suis un Indépendant</a>
             </div>
           </div>
-        </div>
-      </section>
-
-      <footer className="sg-border-t sg-border-black/10 sg-py-8 sg-text-black/70">
-        <div className="sg-container sg-flex sg-flex-col sm:sg-flex-row sg-items-center sg-justify-between sg-gap-4">
-          <p>© {new Date().getFullYear()} Sharings — Tous droits réservés.</p>
-          <nav className="sg-flex sg-gap-4">
-            <a href="#features" className="hover:sg-text-primary">Fonctionnalités</a>
-            <a href="#how" className="hover:sg-text-primary">Comment ça marche</a>
-            <Link to="/login" className="hover:sg-text-primary">Se connecter</Link>
-          </nav>
+        </section>
+      </main>
+      <footer className="section text-center text-sm text-ink/60">
+        <div className="container">
+          © {new Date().getFullYear()} Sharings. Tous droits réservés.
         </div>
       </footer>
-    </>
+    </div>
   );
 }

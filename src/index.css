@@ -2,23 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fonts (optionnel: ajoute ces <link> dans index.html)
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+/* Fonts: add these links in index.html
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
 */
 
-html { scroll-behavior: smooth; }
-body { @apply sg-bg-base sg-text-black sg-font-sans sg-antialiased; }
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-base text-ink font-sans antialiased; }
+  h1, h2, h3, h4 { @apply font-serif text-ink; }
+}
 
-/* utilitaires namespacés (aucun conflit) */
 @layer utilities {
-  .sg-container { @apply sg-mx-auto sg-max-w-7xl sg-px-4 sm:sg-px-6 lg:sg-px-8; }
-  .sg-section { @apply sg-py-10 sm:sg-py-14 lg:sg-py-20; }
-  .sg-title-hero { font-size: clamp(2.2rem, 6vw, 4.25rem); @apply sg-font-bold sg-leading-tight; }
-  .sg-title-h2 { font-size: clamp(1.5rem, 4.2vw, 2.25rem); @apply sg-font-semibold; }
-  .sg-text-lead { @apply sg-text-base sm:sg-text-lg sg-text-black/80; }
-  .sg-card { @apply sg-rounded-2xl sg-border sg-border-black/10 sg-bg-black/5 sg-backdrop-blur sg-p-5 sm:sg-p-6 sg-shadow-lg; }
-  .sg-btn { @apply sg-inline-flex sg-items-center sg-justify-center sg-rounded-xl sg-px-5 sg-py-3 sg-font-medium sg-min-h-[48px] sg-transition focus:sg-outline-none focus:sg-ring-2 focus:sg-ring-primary/30; }
-  .sg-btn-primary { @apply sg-btn sg-bg-primary sg-text-white hover:sg-opacity-90 active:sg-opacity-80; }
-  .sg-btn-ghost { @apply sg-btn sg-border sg-border-primary/20 sg-text-primary hover:sg-bg-primary/5; }
-  .sg-chip { @apply sg-inline-flex sg-items-center sg-rounded-full sg-px-3 sg-py-1 sg-text-sm sg-border sg-border-black/10 sg-bg-black/5; }
+  .container { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .section { @apply py-12 sm:py-16 lg:py-24; }
+  .title-hero { font-size: clamp(2.5rem,6vw,4.5rem); @apply font-serif font-bold leading-tight; }
+  .title-h2 { font-size: clamp(1.75rem,4vw,2.5rem); @apply font-serif font-semibold; }
+  .text-lead { @apply text-lg sm:text-xl text-ink/80; }
+  .card { @apply rounded-xl border border-white/10 bg-surface p-6 shadow-soft backdrop-blur transition hover:scale-[1.01]; }
+  .btn { @apply inline-flex items-center justify-center rounded-xl px-6 py-3 font-medium min-h-[48px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50; }
+  .btn-primary { @apply btn bg-primary text-white hover:bg-primary/90 active:bg-primary/80; }
+  .btn-outline { @apply btn border border-ink/40 text-ink hover:bg-surface; }
+  .dot { @apply h-3 w-3 rounded-full bg-ink/40; }
+  .dot-active { @apply dot bg-primary; }
+  .skeleton { @apply animate-pulse bg-ink/20; }
 }
