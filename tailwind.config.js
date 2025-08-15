@@ -10,15 +10,10 @@ export default {
         accent: "#ff6b6b",
         ink: "#eaeef6",
       },
+      boxShadow: { soft: "0 8px 30px rgba(0,0,0,.18)" },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "Avenir", "Helvetica", "Arial", "sans-serif"],
         serif: ["Playfair Display", "Georgia", "serif"],
-      },
-      boxShadow: {
-        soft: "0 8px 30px rgba(0,0,0,.15)",
-      },
-      transitionDuration: {
-        DEFAULT: "200ms",
       },
     },
   },

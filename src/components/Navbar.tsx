@@ -1,60 +1,35 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-
+  const item = "px-3 py-2 rounded-lg text-white/85 hover:text-white hover:bg-white/5 transition";
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-base/80 backdrop-blur">
-      <div className="container flex items-center justify-between py-4">
-        <Link to="/" className="text-2xl font-serif text-ink">
-          Sharings
-        </Link>
-        <nav className="hidden md:flex gap-8 text-sm">
-          <a href="#features" className="hover:text-primary transition-colors">Pourquoi</a>
-          <a href="#how" className="hover:text-primary transition-colors">Comment</a>
-          <a href="#cta" className="btn-primary">Rejoindre</a>
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-base/70 backdrop-blur">
+      <div className="container-page flex items-center justify-between h-16">
+        <Link to="/" className="font-semibold">Sharings</Link>
+        <nav className="hidden md:flex items-center gap-1">
+          <a href="#features" className={item}>Fonctionnalités</a>
+          <a href="#how" className={item}>Comment ça marche</a>
+          <NavLink to="/login" className={item}>Se connecter</NavLink>
+          <NavLink to="/signup" className="btn-primary ml-1">Créer un compte</NavLink>
         </nav>
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/15"
           aria-label="Ouvrir le menu"
           aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            className="h-6 w-6"
-          >
-            <path
-              strokeWidth="2"
-              strokeLinecap="round"
-              d={open ? "M6 18L18 6M6 6l12 12" : "M3 6h18M3 12h18M3 18h18"}
-            />
-          </svg>
-        </button>
+          onClick={() => setOpen(v => !v)}
+        >☰</button>
       </div>
       {open && (
-        <nav id="mobile-menu" className="md:hidden border-t border-white/10 bg-base">
-          <ul className="container flex flex-col py-4 space-y-3">
-            <li>
-              <a href="#features" className="hover:text-primary transition-colors" onClick={() => setOpen(false)}>
-                Pourquoi
-              </a>
-            </li>
-            <li>
-              <a href="#how" className="hover:text-primary transition-colors" onClick={() => setOpen(false)}>
-                Comment
-              </a>
-            </li>
-            <li>
-              <a href="#cta" className="btn-primary" onClick={() => setOpen(false)}>
-                Rejoindre
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <div className="md:hidden border-t border-white/10 bg-base">
+          <div className="container-page py-3 flex flex-col">
+            <a href="#features" onClick={() => setOpen(false)} className="py-2">Fonctionnalités</a>
+            <a href="#how" onClick={() => setOpen(false)} className="py-2">Comment ça marche</a>
+            <Link to="/login" onClick={() => setOpen(false)} className="py-2">Se connecter</Link>
+            <Link to="/signup" onClick={() => setOpen(false)} className="btn-primary mt-2 text-center">Créer un compte</Link>
+          </div>
+        </div>
       )}
     </header>
   );
