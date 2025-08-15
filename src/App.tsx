@@ -7,6 +7,9 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import AnnoncesPage from "./pages/AnnoncesPage";
 import NewAnnoncePage from "./pages/NewAnnoncePage";
+import BookingPage from "./pages/BookingPage";
+import MessagingPage from "./pages/MessagingPage";
+import ContractPage from "./pages/ContractPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function ScrollToHash() {
@@ -30,6 +33,9 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/annonces" element={<AnnoncesPage />} />
           <Route path="/annonces/new" element={<NewAnnoncePage />} />
+          <Route path="/reservations" element={<BookingPage />} />
+          <Route path="/messages" element={<MessagingPage />} />
+          <Route path="/contrat" element={<ContractPage />} />
         </Route>
       </Routes>
     </>

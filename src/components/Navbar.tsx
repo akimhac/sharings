@@ -24,6 +24,9 @@ export default function Navbar() {
           {user ? (
             <>
               <NavLink to="/annonces" className={item}>Annonces</NavLink>
+              <NavLink to="/reservations" className={item}>Réservations</NavLink>
+              <NavLink to="/messages" className={item}>Messages</NavLink>
+              <NavLink to="/contrat" className={item}>Contrat</NavLink>
               <NavLink to="/dashboard" className={item}>Dashboard</NavLink>
               <button onClick={handleLogout} className={item}>Se déconnecter</button>
             </>
@@ -51,6 +54,9 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link to="/annonces" onClick={() => setOpen(false)} className="sg-py-2">Annonces</Link>
+                <Link to="/reservations" onClick={() => setOpen(false)} className="sg-py-2">Réservations</Link>
+                <Link to="/messages" onClick={() => setOpen(false)} className="sg-py-2">Messages</Link>
+                <Link to="/contrat" onClick={() => setOpen(false)} className="sg-py-2">Contrat</Link>
                 <Link to="/dashboard" onClick={() => setOpen(false)} className="sg-py-2">Dashboard</Link>
                 <button onClick={handleLogout} className="sg-py-2 sg-text-left">Se déconnecter</button>
               </>
