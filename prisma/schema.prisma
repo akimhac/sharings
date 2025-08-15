@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int             @id @default(autoincrement())
+  role       String
+  email      String          @unique
+  password   String
+  paidAccess Boolean         @default(false)
+  listings   Listing[]
+  searchReqs SearchRequest[]
+  payments   Payment[]
+  salons     Salon[]
+}
+
+model Salon {
+  id          Int      @id @default(autoincrement())
+  ownerId     Int
+  name        String
+  address     String
+  city        String
+  photos      String[]
+  description String?
+  owner       User     @relation(fields: [ownerId], references: [id])
+  listings    Listing[]
+}
+
+model Listing {
+  id          Int      @id @default(autoincrement())
+  salonId     Int
+  title       String
+  description String
+  priceDay    Float
+  priceWeek   Float
+  activeUntil DateTime
+  status      String   @default("active")
+  salon       Salon    @relation(fields: [salonId], references: [id])
+}
+
+model SearchRequest {
+  id         Int      @id @default(autoincrement())
+  clientId   Int
+  description String
+  city       String
+  createdAt  DateTime @default(now())
+  client     User     @relation(fields: [clientId], references: [id])
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Float
+  type      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
