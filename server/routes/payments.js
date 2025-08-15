@@ -15,5 +15,36 @@ export default function paymentRoutes(prisma) {
     res.json({ success: true });
   });
 
+  router.post('/listing/:id', authMiddleware, async (req, res) => {
+    const listingId = parseInt(req.params.id, 10);
+    const activeUntil = new Date();
+    activeUntil.setMonth(activeUntil.getMonth() + 1);
+
+    await prisma.payment.create({
+      data: { userId: req.user.userId, amount: 9.99, type: 'listing' }
+    });
+    await prisma.listing.update({
+      where: { id: listingId },
+      data: { activeUntil }
+    });
+    res.json({ success: true });
+  });
+
+  router.post('/search', authMiddleware, async (req, res) => {
+    const { description, city } = req.body;
+
+    await prisma.payment.create({
+      data: { userId: req.user.userId, amount: 9.99, type: 'search' }
+    });
+    const request = await prisma.searchRequest.create({
+      data: {
+        clientId: req.user.userId,
+        description,
+        city
+      }
+    });
+    res.json(request);
+  });
+
   return router;
 }
