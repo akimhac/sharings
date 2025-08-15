@@ -4,6 +4,10 @@ import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import DashboardPage from "./pages/DashboardPage";
+import AnnoncesPage from "./pages/AnnoncesPage";
+import NewAnnoncePage from "./pages/NewAnnoncePage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function ScrollToHash() {
   const { hash } = useLocation();
@@ -22,6 +26,11 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/annonces" element={<AnnoncesPage />} />
+          <Route path="/annonces/new" element={<NewAnnoncePage />} />
+        </Route>
       </Routes>
     </>
   );

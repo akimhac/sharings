@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { supabase } from "../supabase";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
   const item = "sg-px-3 sg-py-2 sg-rounded-lg sg-text-black/85 hover:sg-text-black hover:sg-bg-black/5 sg-transition";
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setOpen(false);
+  };
 
   return (
     <header className="sg-sticky sg-top-0 sg-z-50 sg-border-b sg-border-black/10 sg-bg-base/70 sg-backdrop-blur">
@@ -13,8 +21,18 @@ export default function Navbar() {
         <nav className="sg-hidden md:sg-flex sg-items-center sg-gap-1">
           <a href="#features" className={item}>Fonctionnalités</a>
           <a href="#how" className={item}>Comment ça marche</a>
-          <NavLink to="/login" className={item}>Se connecter</NavLink>
-          <NavLink to="/signup" className="sg-btn-primary sg-ml-1">Créer un compte</NavLink>
+          {user ? (
+            <>
+              <NavLink to="/annonces" className={item}>Annonces</NavLink>
+              <NavLink to="/dashboard" className={item}>Dashboard</NavLink>
+              <button onClick={handleLogout} className={item}>Se déconnecter</button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className={item}>Se connecter</NavLink>
+              <NavLink to="/signup" className="sg-btn-primary sg-ml-1">Créer un compte</NavLink>
+            </>
+          )}
         </nav>
 
         <button
@@ -30,8 +48,18 @@ export default function Navbar() {
           <div className="sg-container sg-py-3 sg-flex sg-flex-col">
             <a href="#features" onClick={() => setOpen(false)} className="sg-py-2">Fonctionnalités</a>
             <a href="#how" onClick={() => setOpen(false)} className="sg-py-2">Comment ça marche</a>
-            <Link to="/login" onClick={() => setOpen(false)} className="sg-py-2">Se connecter</Link>
-            <Link to="/signup" onClick={() => setOpen(false)} className="sg-btn-primary sg-mt-2 sg-w-full sg-text-center">Créer un compte</Link>
+            {user ? (
+              <>
+                <Link to="/annonces" onClick={() => setOpen(false)} className="sg-py-2">Annonces</Link>
+                <Link to="/dashboard" onClick={() => setOpen(false)} className="sg-py-2">Dashboard</Link>
+                <button onClick={handleLogout} className="sg-py-2 sg-text-left">Se déconnecter</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setOpen(false)} className="sg-py-2">Se connecter</Link>
+                <Link to="/signup" onClick={() => setOpen(false)} className="sg-btn-primary sg-mt-2 sg-w-full sg-text-center">Créer un compte</Link>
+              </>
+            )}
           </div>
         </div>
       )}

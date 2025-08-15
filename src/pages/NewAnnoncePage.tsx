@@ -1,0 +1,42 @@
+import { useState } from "react";
+import { supabase } from "../supabase";
+import { useNavigate } from "react-router-dom";
+
+export default function NewAnnoncePage() {
+  const [titre, setTitre] = useState("");
+  const [description, setDescription] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { error } = await supabase.from("annonces").insert({ titre, description });
+    if (!error) navigate("/annonces");
+  };
+
+  return (
+    <section className="sg-section">
+      <div className="sg-container sg-max-w-md">
+        <h2 className="sg-title-h2 sg-mb-6">Nouvelle annonce</h2>
+        <form onSubmit={handleSubmit} className="sg-flex sg-flex-col sg-gap-4">
+          <input
+            className="sg-w-full sg-rounded-lg sg-border sg-border-black/20 sg-px-4 sg-py-2"
+            value={titre}
+            onChange={e => setTitre(e.target.value)}
+            placeholder="Titre"
+            required
+          />
+          <textarea
+            className="sg-w-full sg-rounded-lg sg-border sg-border-black/20 sg-px-4 sg-py-2"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Description"
+            required
+          />
+          <button type="submit" className="sg-btn-primary">
+            Publier
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
