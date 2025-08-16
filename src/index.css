@@ -17,3 +17,44 @@ body { @apply bg-base text-white antialiased font-sans; }
   .btn-ghost { @apply btn border border-white/15 text-white hover:bg-white/5; }
   .chip { @apply inline-flex items-center rounded-full px-3 py-1 text-sm border border-white/10 bg-white/5; }
 }
+
+@layer utilities {
+  /* ombre de lisibilité sur titres */
+  .drop-shadow-hero {
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+  }
+
+  /* safe area pour iPhone */
+  .pt-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* hauteur dynamique */
+  .h-dvh {
+    height: 100dvh;
+  }
+
+  /* animations */
+  .animate-fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s forwards;
+  }
+
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
