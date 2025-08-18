@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
-import CarouselSmart from "../components/CarouselSmart";
-import { HERO_IMAGES } from "../assets/landingImages";
+import BackgroundCarousel from "../components/BackgroundCarousel";
+import { HERO_BG_IMAGES } from "../assets/landingImages";
 import { Link } from "react-router-dom";
 
 export default function LandingPage() {
@@ -9,28 +9,29 @@ export default function LandingPage() {
       <Navbar />
 
       {/* HERO */}
-      <section className="section">
-        <div className="container-page grid items-center gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-6">
-            <h1 className="title-hero max-w-[16ch]">
-              Réservez votre siège et trouvez les <span className="text-accent">meilleurs prestataires</span>
-            </h1>
-            <p className="text-lead mt-4 max-w-prose">
-              Sharings connecte instituts, indépendants et organisateurs d’événements pour louer des places disponibles et créer des collaborations uniques et rentables.
-            </p>
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Link to="/signup?role=salon" className="btn-primary">Je suis un Salon</Link>
-              <Link to="/signup?role=indep" className="btn-ghost">Je suis un Indépendant</Link>
+      <section className="relative overflow-hidden">
+        <div className="h-[520px] md:h-[640px] relative">
+          <BackgroundCarousel images={HERO_BG_IMAGES} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/55" />
+          <div className="absolute inset-0 backdrop-blur-[1px]" />
+          <div className="relative z-10 h-full">
+            <div className="container-page h-full flex flex-col items-start justify-center text-white pt-safe-top">
+              <h1 className="title-hero max-w-[16ch] drop-shadow-hero animate-fade-in-up">
+                Réservez votre siège et trouvez les <span className="text-accent">meilleurs prestataires</span>
+              </h1>
+              <p className="text-lead mt-4 max-w-prose animate-fade-in-up delay-150">
+                Sharings connecte instituts, indépendants et organisateurs d’événements pour louer des places disponibles et créer des collaborations uniques et rentables.
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row gap-3 animate-fade-in-up delay-300">
+                <Link to="/signup?role=salon" className="btn-primary">Je suis un Salon</Link>
+                <Link to="/signup?role=indep" className="btn-ghost">Je suis un Indépendant</Link>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-2 animate-fade-in-up delay-500">
+                <span className="chip">Réservation de sièges</span>
+                <span className="chip">Messagerie intégrée</span>
+                <span className="chip">Contrats simplifiés</span>
+              </div>
             </div>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="chip">Réservation de sièges</span>
-              <span className="chip">Messagerie intégrée</span>
-              <span className="chip">Contrats simplifiés</span>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6">
-            <CarouselSmart images={HERO_IMAGES} intervalMs={5000} />
           </div>
         </div>
       </section>
