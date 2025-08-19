@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-type Img = { src: string; alt: string; srcSet?: string; sizes?: string };
+type Img = { src: string; alt: string; srcSet?: string; sizes?: string; fallback?: string };
 
 export default function CarouselSmart({
   images,
@@ -45,20 +45,39 @@ export default function CarouselSmart({
 
       <div className="relative select-none" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <picture>
-          {cur.srcSet && <source srcSet={cur.srcSet} sizes={cur.sizes ?? "(min-width:1024px) 800px, 100vw"} />}
+          {cur.srcSet && (
+            <source
+              srcSet={cur.srcSet}
+              sizes={cur.sizes ?? "(min-width:1024px) 800px, 100vw"}
+            />
+          )}
           <img
             key={i}
             src={cur.src}
             alt={cur.alt}
             loading="eager"
             decoding="async"
-            className={`${heightClass} w-full object-cover transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}
+            referrerPolicy="no-referrer"     // évite certains blocages
+            crossOrigin="anonymous"
+            className={`${heightClass} w-full object-cover transition-opacity duration-500 ${
+              loading ? "opacity-0" : "opacity-100"
+            }`}
+            style={{ aspectRatio: "16/9" }}  // ratio fixe, évite “saut” et décodage foireux
             onLoad={() => setLoading(false)}
             onError={(e) => {
-              (e.target as HTMLImageElement).style.background = "linear-gradient(135deg,#2b2b2b,#1f1f1f)";
+              const img = e.target as HTMLImageElement;
+              // 1) tente le fallback distant si défini
+              if (cur.fallback && img.src !== cur.fallback) {
+                img.src = cur.fallback;
+                return;
+              }
+              // 2) dernier secours : fond neutre
+              img.style.background =
+                "linear-gradient(135deg,#2b2b2b,#1f1f1f)";
               setLoading(false);
             }}
-            width={1600} height={900}
+            width={1600}
+            height={900}
           />
         </picture>
 
