@@ -7,13 +7,19 @@ body { @apply bg-base text-white antialiased font-sans; }
 
 @layer utilities {
   .container-page { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
-  .section { @apply py-10 sm:py-14 lg:py-20; }
-  .title-hero { font-size: clamp(2.2rem, 6vw, 4.2rem); @apply font-serif font-bold leading-tight; }
-  .title-h2 { font-size: clamp(1.5rem, 4.2vw, 2.25rem); @apply font-semibold; }
+  .section { @apply py-12 sm:py-16 lg:py-24; }
+  .title-hero { font-size: clamp(2rem, 6vw, 4rem); @apply font-extrabold leading-tight; }
+  .title-h2 { font-size: clamp(1.5rem, 4.5vw, 2.5rem); @apply font-bold; }
   .text-lead { @apply text-base sm:text-lg text-white/80; }
-  .card { @apply rounded-2xl border border-white/10 bg-surface backdrop-blur p-5 sm:p-6 shadow-lg; }
-  .btn { @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-medium transition min-h-[48px] focus:outline-none focus:ring-2 focus:ring-white/30; }
+  .card { @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-lg; }
+  .btn { @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold transition min-h-[48px] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50; }
   .btn-primary { @apply btn bg-primary text-white hover:opacity-90 active:opacity-80; }
-  .btn-ghost { @apply btn border border-white/15 text-white hover:bg-white/5; }
+  .btn-ghost { @apply btn border border-white/20 text-white hover:bg-white/5; }
   .chip { @apply inline-flex items-center rounded-full px-3 py-1 text-sm border border-white/10 bg-white/5; }
+  .drop-shadow-hero { filter: drop-shadow(0 10px 24px rgba(0,0,0,.35)); }
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(16px); animation: r .6s ease-out forwards; }
+    .delay-150 { animation-delay: .15s; } .delay-300 { animation-delay: .3s; } .delay-500 { animation-delay: .5s; }
+    @keyframes r { to { opacity: 1; transform: translateY(0) } }
+  }
 }
