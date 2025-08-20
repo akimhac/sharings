@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-type Slide = { src: string; srcSet?: string; alt?: string; objectPosition?: string };
+export type Slide = { src: string; srcSet?: string; alt?: string; objectPosition?: string };
 
 export default function BackgroundCarousel({
   images, intervalMs = 6000, className = "", pauseOnHover = false
