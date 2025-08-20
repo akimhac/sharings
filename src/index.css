@@ -19,9 +19,13 @@ body { @apply bg-base text-white antialiased font-sans; }
   .drop-shadow-hero { filter: drop-shadow(0 10px 24px rgba(0,0,0,.35)); }
   @media (prefers-reduced-motion: no-preference) {
     .reveal { opacity: 0; transform: translateY(16px); animation: r .6s ease-out forwards; }
+ codex/add-background-carousel-and-styling-components
     .delay-150 { animation-delay: .15s; }
     .delay-300 { animation-delay: .3s; }
     .delay-500 { animation-delay: .5s; }
+
+    .delay-150 { animation-delay: .15s; } .delay-300 { animation-delay: .3s; } .delay-500 { animation-delay: .5s; }
+ main
     @keyframes r { to { opacity: 1; transform: translateY(0) } }
   }
 }
