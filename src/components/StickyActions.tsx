@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 
- codex/add-background-carousel-and-styling-components
 export default function StickyActions(){
-
-export default function StickyActions() {
- main
   return (
     <div className="fixed inset-x-0 bottom-4 z-40 px-4 sm:hidden">
       <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-black/60 backdrop-blur p-2 flex gap-2">
@@ -14,5 +10,3 @@ export default function StickyActions() {
     </div>
   );
 }
- codex/add-background-carousel-and-styling-components
- main
