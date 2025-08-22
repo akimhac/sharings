@@ -10,7 +10,6 @@ export default function LandingPage(){
   return (
     <>
       <Navbar />
-      {/* HERO */}
       <section className="relative overflow-hidden bg-base text-white">
         <div className="relative h-[520px] md:h-[640px]">
           <BackgroundCarousel images={HERO_BG_IMAGES} pauseOnHover />
@@ -38,7 +37,6 @@ export default function LandingPage(){
         </div>
       </section>
 
-      {/* FEATURES */}
       <section id="features" className="section bg-base text-white">
         <div className="container-page">
           <h2 className="title-h2 text-center mb-10">Pourquoi Sharings ?</h2>
@@ -56,7 +54,6 @@ export default function LandingPage(){
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section id="how" className="section bg-base text-white/90">
         <div className="container-page">
           <h2 className="title-h2 text-center mb-10">Comment ça marche</h2>
@@ -68,7 +65,6 @@ export default function LandingPage(){
         </div>
       </section>
 
-      {/* FINAL CTA */}
       <section className="section bg-base text-white">
         <div className="container-page">
           <div className="card flex flex-col md:flex-row items-center justify-between gap-4">
@@ -88,4 +84,3 @@ export default function LandingPage(){
     </>
   );
 }
-

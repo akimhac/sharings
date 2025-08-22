@@ -5,4 +5,4 @@
     NODE_VERSION = "20.11.1"
     NPM_FLAGS = "--no-fund --no-audit"
 
-# NOTE: Les règles sont désormais fournies par public/_headers et public/_redirects. 
+# NOTE: Les règles Redirects/Headers sont fournies par public/_headers et public/_redirects
