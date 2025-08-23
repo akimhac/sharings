@@ -17,15 +17,12 @@ body { @apply bg-base text-white antialiased font-sans; }
   .btn-ghost { @apply btn border border-white/20 text-white hover:bg-white/5; }
   .chip { @apply inline-flex items-center rounded-full px-3 py-1 text-sm border border-white/10 bg-white/5; }
   .drop-shadow-hero { filter: drop-shadow(0 10px 24px rgba(0,0,0,.35)); }
+  .gradient-text { @apply bg-clip-text text-transparent; background-image: linear-gradient(90deg, #60a5fa, #c4b5fd, #f9a8d4); }
   @media (prefers-reduced-motion: no-preference) {
     .reveal { opacity: 0; transform: translateY(16px); animation: r .6s ease-out forwards; }
- codex/add-background-carousel-and-styling-components
     .delay-150 { animation-delay: .15s; }
     .delay-300 { animation-delay: .3s; }
     .delay-500 { animation-delay: .5s; }
-
-    .delay-150 { animation-delay: .15s; } .delay-300 { animation-delay: .3s; } .delay-500 { animation-delay: .5s; }
- main
     @keyframes r { to { opacity: 1; transform: translateY(0) } }
   }
 }
