@@ -9,10 +9,7 @@ export default {
         accent: "#ef4444",
         surface: "rgba(255,255,255,0.04)",
         border: "rgba(255,255,255,0.12)",
- codex/add-background-carousel-and-styling-components
-
         ink: "#eaeef6",
- main
       },
       boxShadow: { soft: "0 8px 30px rgba(0,0,0,.18)" },
       fontFamily: {
@@ -22,4 +19,4 @@ export default {
     },
   },
   plugins: [],
-};
+}

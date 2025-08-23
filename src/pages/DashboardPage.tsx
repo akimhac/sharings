@@ -1,20 +1,20 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../supabase";
-import { useAuth } from "../contexts/AuthContext";
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { supabase } from "../lib/supa"
+import { useAuth } from "../contexts/AuthContext"
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate]);
+    if (!user) navigate("/login")
+  }, [user, navigate])
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-  };
+    await supabase.auth.signOut()
+    navigate("/")
+  }
 
   return (
     <section className="sg-section">
@@ -28,5 +28,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </section>
-  );
+  )
 }

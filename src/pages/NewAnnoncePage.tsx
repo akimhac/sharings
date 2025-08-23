@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { supabase } from "../supabase";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react"
+import { supabase } from "../lib/supa"
+import { useNavigate } from "react-router-dom"
 
 export default function NewAnnoncePage() {
-  const [titre, setTitre] = useState("");
-  const [description, setDescription] = useState("");
-  const navigate = useNavigate();
+  const [titre, setTitre] = useState("")
+  const [description, setDescription] = useState("")
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { error } = await supabase.from("annonces").insert({ titre, description });
-    if (!error) navigate("/annonces");
-  };
+    e.preventDefault()
+    const { error } = await supabase.from("annonces").insert({ titre, description })
+    if (!error) navigate("/annonces")
+  }
 
   return (
     <section className="sg-section">
@@ -21,14 +21,14 @@ export default function NewAnnoncePage() {
           <input
             className="sg-w-full sg-rounded-lg sg-border sg-border-black/20 sg-px-4 sg-py-2"
             value={titre}
-            onChange={e => setTitre(e.target.value)}
+            onChange={(e) => setTitre(e.target.value)}
             placeholder="Titre"
             required
           />
           <textarea
             className="sg-w-full sg-rounded-lg sg-border sg-border-black/20 sg-px-4 sg-py-2"
             value={description}
-            onChange={e => setDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
             required
           />
@@ -38,5 +38,5 @@ export default function NewAnnoncePage() {
         </form>
       </div>
     </section>
-  );
+  )
 }

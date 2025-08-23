@@ -1,32 +1,32 @@
-import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { supabase } from "../supabase";
-import { toast } from "react-hot-toast";
+import { useState } from "react"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
+import { supabase } from "../lib/supa"
+import { toast } from "react-hot-toast"
 
 export default function SignupPage() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const role = searchParams.get("role") || "";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const role = searchParams.get("role") || ""
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { role } },
-    });
-    setLoading(false);
+    })
+    setLoading(false)
     if (error) {
-      toast.error(error.message);
+      toast.error(error.message)
     } else {
-      toast.success("Vérifiez vos emails pour confirmer");
-      navigate("/login");
+      toast.success("Vérifiez vos emails pour confirmer")
+      navigate("/login")
     }
-  };
+  }
 
   return (
     <section className="sg-section">
@@ -39,7 +39,7 @@ export default function SignupPage() {
             placeholder="Email"
             className="sg-w-full sg-rounded-lg sg-border sg-border-black/20 sg-px-4 sg-py-2"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
@@ -47,13 +47,9 @@ export default function SignupPage() {
             placeholder="Mot de passe"
             className="sg-w-full sg-rounded-lg sg-border sg-border-black/20 sg-px-4 sg-py-2"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
-          <button
-            type="submit"
-            className="sg-btn-primary"
-            disabled={loading}
-          >
+          <button type="submit" className="sg-btn-primary" disabled={loading}>
             {loading ? "Création..." : "Créer un compte"}
           </button>
         </form>
@@ -62,5 +58,5 @@ export default function SignupPage() {
         </p>
       </div>
     </section>
-  );
+  )
 }
