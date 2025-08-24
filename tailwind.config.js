@@ -4,6 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        base: "#0a0a0a",
+        primary: "#4a7fa7",
+        accent: "#e5a3b6",
+
         base: "#0f1115",
         primary: "#2563eb",
         accent: "#ef4444",
@@ -15,6 +19,7 @@ export default {
       fontFamily: {
         display: ["Playfair Display", "serif"],
         sans: ["Inter", "ui-sans-serif", "system-ui"],
+ main
       },
     },
   },
