@@ -1,102 +1,73 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react"
 
-codex/add-background-carousel-and-styling-components
-export type Slide = { src: string; srcSet?: string; alt?: string; objectPosition?: string };
+export type Slide = {
+  src: string
+  alt?: string
+  srcSet?: string
+  objectPosition?: string
+}
+
+interface Props {
+  slides: Slide[]
+  intervalMs?: number
+  pauseOnHover?: boolean
+  className?: string
+}
 
 export default function BackgroundCarousel({
-  images, intervalMs = 6000, className = "", pauseOnHover = false
-}: { images: Slide[]; intervalMs?: number; className?: string; pauseOnHover?: boolean; }) {
-
-type Slide = { src: string; srcSet?: string; alt?: string; objectPosition?: string };
-
-export default function BackgroundCarousel({
-  images,
-  intervalMs = 6000,
+  slides,
+  intervalMs = 5000,
+  pauseOnHover = true,
   className = "",
-  pauseOnHover = false,
-}: {
-  images: Slide[];
-  intervalMs?: number;
-  className?: string;
-  pauseOnHover?: boolean;
-}) {
- main
-  const [i, setI] = useState(0);
-  const [fade, setFade] = useState(false);
-  const timer = useRef<number | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
+}: Props) {
+  const [idx, setIdx] = useState(0)
+  const timer = useRef<number | null>(null)
+  const paused = useRef(false)
 
   useEffect(() => {
-    if (images.length < 2) return;
-    const run = () => {
-      timer.current = window.setInterval(() => {
-        setFade(true);
- codex/add-background-carousel-and-styling-components
-        window.setTimeout(() => { setI((p) => (p + 1) % images.length); setFade(false); }, 250);
+    start()
+    return stop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slides.length, intervalMs])
 
-        window.setTimeout(() => {
-          setI((p) => (p + 1) % images.length);
-          setFade(false);
-        }, 250);
- main
-      }, intervalMs);
-    };
-    run();
-    const el = ref.current;
-    if (pauseOnHover && el) {
- codex/add-background-carousel-and-styling-components
-      const stop = () => { if (timer.current) window.clearInterval(timer.current); };
-      const start = () => run();
-      el.addEventListener("mouseenter", stop);
-      el.addEventListener("mouseleave", start);
-      return () => { stop(); el.removeEventListener("mouseenter", stop); el.removeEventListener("mouseleave", start); };
-    }
-    return () => { if (timer.current) window.clearInterval(timer.current); };
-      const stop = () => {
-        if (timer.current) window.clearInterval(timer.current);
-      };
-      const start = () => run();
-      el.addEventListener("mouseenter", stop);
-      el.addEventListener("mouseleave", start);
-      return () => {
-        stop();
-        el.removeEventListener("mouseenter", stop);
-        el.removeEventListener("mouseleave", start);
-      };
-    }
-    return () => {
-      if (timer.current) window.clearInterval(timer.current);
-    };
- main
-  }, [images.length, intervalMs, pauseOnHover]);
+  function start() {
+    stop()
+    timer.current = window.setInterval(() => {
+      if (!paused.current) {
+        setIdx((i) => (i + 1) % slides.length)
+      }
+    }, intervalMs)
+  }
 
-  const cur = images[i];
+  function stop() {
+    if (timer.current) {
+      window.clearInterval(timer.current)
+      timer.current = null
+    }
+  }
+
   return (
-    <div ref={ref} className={`absolute inset-0 ${className}`} aria-hidden="true">
-      <picture className="block h-full w-full">
-        {cur.srcSet && <source srcSet={cur.srcSet} sizes="100vw" />}
+    <div
+      className={`relative h-full w-full overflow-hidden ${className}`}
+      onMouseEnter={() => pauseOnHover && (paused.current = true)}
+      onMouseLeave={() => pauseOnHover && (paused.current = false)}
+    >
+      {slides.map((s, i) => (
         <img
-          key={i}
-          src={cur.src}
-          alt={cur.alt ?? ""}
+          key={s.src + i}
+          src={s.src}
+          srcSet={s.srcSet}
+          alt={s.alt ?? ""}
+          decoding="async"
           loading={i === 0 ? "eager" : "lazy"}
           fetchPriority={i === 0 ? "high" : "auto"}
-          decoding="async"
-          className={`h-full w-full object-cover transition-opacity duration-700 ease-in-out ${fade ? "opacity-0" : "opacity-100"}`}
-          style={{ objectPosition: cur.objectPosition ?? "center" }}
- codex/add-background-carousel-and-styling-components
-          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
- main
+          style={{ objectPosition: s.objectPosition }}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            i === idx ? "opacity-100" : "opacity-0"
+          }`}
         />
-      </picture>
+      ))}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
     </div>
-  );
+  )
 }
- codex/add-background-carousel-and-styling-components
-
-=======
- main
