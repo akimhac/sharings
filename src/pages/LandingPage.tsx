@@ -1,4 +1,5 @@
 import HeroBackgroundCarousel from "../components/BackgroundCarousel";
+import Navbar from "../components/Navbar";
 
 const HERO_IMAGES = [
   {
@@ -18,16 +19,7 @@ const HERO_IMAGES = [
 export default function LandingPage() {
   return (
     <main className="relative bg-base">
-      {/* NAV "verre" */}
-      <header className="navbar-glass">
-        <div className="container-page flex h-14 items-center justify-between">
-          <a href="/" className="font-semibold">Sharings</a>
-          <nav className="hidden sm:flex items-center gap-3">
-            <a href="/login" className="btn btn-light">Se connecter</a>
-            <a href="/register" className="btn btn-primary">Créer un compte</a>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* HERO plein écran (texte blanc sur image) */}
       <section className="relative h-dvh sm:min-h-[82vh]">
