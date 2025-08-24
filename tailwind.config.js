@@ -7,8 +7,21 @@ export default {
         base: "#0a0a0a",
         primary: "#4a7fa7",
         accent: "#e5a3b6",
+
+        base: "#0f1115",
+        primary: "#2563eb",
+        accent: "#ef4444",
+        surface: "rgba(255,255,255,0.04)",
+        border: "rgba(255,255,255,0.12)",
+        ink: "#eaeef6",
+      },
+      boxShadow: { soft: "0 8px 30px rgba(0,0,0,.18)" },
+      fontFamily: {
+        display: ["Playfair Display", "serif"],
+        sans: ["Inter", "ui-sans-serif", "system-ui"],
+ main
       },
     },
   },
   plugins: [],
-};
+}

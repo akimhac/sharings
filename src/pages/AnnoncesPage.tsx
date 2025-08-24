@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../supabase";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react"
+import { supabase } from "../lib/supa"
+import { Link } from "react-router-dom"
 
 interface Annonce {
-  id: string;
-  titre: string;
-  description: string;
+  id: string
+  titre: string
+  description: string
 }
 
 export default function AnnoncesPage() {
-  const [annonces, setAnnonces] = useState<Annonce[]>([]);
+  const [annonces, setAnnonces] = useState<Annonce[]>([])
 
   useEffect(() => {
     supabase
       .from("annonces")
       .select("id, titre, description")
       .then(({ data }) => {
-        if (data) setAnnonces(data);
-      });
-  }, []);
+        if (data) setAnnonces(data)
+      })
+  }, [])
 
   return (
     <section className="sg-section">
@@ -30,7 +30,7 @@ export default function AnnoncesPage() {
           </Link>
         </div>
         <ul className="sg-mt-6 sg-grid sg-gap-4">
-          {annonces.map(a => (
+          {annonces.map((a) => (
             <li key={a.id} className="sg-card">
               <h3 className="sg-font-semibold">{a.titre}</h3>
               <p className="sg-text-black/80 sg-mt-2">{a.description}</p>
@@ -39,5 +39,5 @@ export default function AnnoncesPage() {
         </ul>
       </div>
     </section>
-  );
+  )
 }
