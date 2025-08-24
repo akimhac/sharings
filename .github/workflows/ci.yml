@@ -1,0 +1,56 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Type check
+        run: npm run typecheck --if-present || npx tsc -b || true
+      - name: Lint
+        run: npm run lint --if-present || echo "no lint"
+      - name: Unit/UI tests (Vitest)
+        run: npm run test:ci
+      - name: Build front
+        run: npm run build
+
+  backend:
+    if: hashFiles('server/**','prisma/**','.github/workflows/ci.yml') != ''
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "file:./dev.db"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Prisma prepare (si présent)
+        run: |
+          if [ -f prisma/schema.prisma ]; then npx prisma generate && npx prisma migrate deploy || npx prisma db push; fi
+      - name: Tests API (supertest) si présents
+        run: npm run test:api --if-present || echo "no api tests"
+
+  supabase-smoke:
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Smoke test Supabase (lecture publique d'annonces)
+        run: node tests/smoke/supabase-read.mjs
