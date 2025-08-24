@@ -4,17 +4,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        base: "#0f1115",
-        primary: "#2563eb",
-        accent: "#ef4444",
-        surface: "rgba(255,255,255,0.04)",
-        border: "rgba(255,255,255,0.12)",
-        ink: "#eaeef6",
+        base: "#ffffff",                // fond clair
+        ink: "#111827",                 // texte principal
+        inkMuted: "#374151",            // texte secondaire
+        line: "#E5E7EB",                // séparateurs
+        surface: "#ffffff",             // cartes blanches
+        surfaceAlt: "#F9FAFB",          // fond alterné
+        brand: {
+          primary: "#FF385C",           // Airbnb-like
+          primaryDark: "#E11D48",
+        },
       },
-      boxShadow: { soft: "0 8px 30px rgba(0,0,0,.18)" },
+      boxShadow: {
+        soft: "0 10px 30px rgba(0,0,0,.08)",
+        card: "0 8px 24px rgba(0,0,0,.06)",
+        cta: "0 12px 28px rgba(255,56,92,.25)",
+      },
+      borderRadius: {
+        xl: "14px",
+        "2xl": "18px",
+      },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        sans: ["Inter", "ui-sans-serif", "system-ui"],
+        sans: ['Inter','system-ui','ui-sans-serif','Segoe UI','Roboto','Helvetica Neue','Arial','Noto Sans'],
+        serif: ['Playfair Display','ui-serif','Georgia','Cambria','Times New Roman','Times'],
       },
     },
   },
