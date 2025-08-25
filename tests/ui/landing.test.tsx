@@ -8,8 +8,8 @@ describe("Landing smoke", () => {
     render(<MemoryRouter><LandingPage /></MemoryRouter>);
     expect(screen.getByText(/Sharings/i)).toBeTruthy();
     expect(
-      screen.getByText(/Réservez un siège/i)
+      screen.getByText(/Révolutionnez votre activité beauté/i)
     ).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Créer un compte/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Créer un compte/i })).toBeTruthy();
   });
 });
