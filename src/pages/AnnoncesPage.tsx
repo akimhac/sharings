@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { sampleListings, type Listing } from "../data/sampleListings";
 import { getCurrentPosition, haversine } from "../lib/geo";
 import { ListingCard } from "../components/ListingCard";
