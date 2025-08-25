@@ -1,6 +1,6 @@
-import type { Slide } from "../components/BackgroundCarousel"
+import type { Image } from "../components/BackgroundCarousel";
 
-export const HERO_BG_IMAGES: Slide[] = [
+export const HERO_BG_IMAGES: Image[] = [
   {
     src: "/hero/1.jpg",
     srcSet: "/hero/1.jpg 800w, /hero/1.jpg 1200w, /hero/1.jpg 1600w",
