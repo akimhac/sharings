@@ -22,6 +22,7 @@ body {
 .btn-primary { @apply bg-brand-primary text-white shadow-cta hover:bg-brand-primaryDark focus:ring-brand-primary; }
 .btn-ghost   { @apply border border-line text-ink hover:bg-surfaceAlt; }
 .btn-light   { @apply bg-white text-ink border border-line hover:bg-surfaceAlt shadow-soft; }
+.chip        { @apply inline-flex items-center rounded-full px-3 py-1 text-sm border border-line bg-surfaceAlt; }
 .glow { box-shadow: 0 0 30px rgba(255,56,92,.25); }
 
 /* iOS safe area + viewport réel */
@@ -41,3 +42,9 @@ body {
     clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
 }
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.fade-in-up { animation: fade-in-up .5s ease both; }
