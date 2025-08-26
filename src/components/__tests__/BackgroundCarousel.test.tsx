@@ -24,4 +24,16 @@ describe("BackgroundCarousel", () => {
     vi.advanceTimersByTime(1500);
     expect(imgs[1].className).toContain("opacity-100");
   });
+
+
+  it("does nothing when images array is empty", () => {
+    const intervalSpy = vi.spyOn(window, "setInterval");
+    const { container } = render(
+      <BackgroundCarousel images={[]} intervalMs={1000} />
+    );
+    expect(container.querySelectorAll("img")).toHaveLength(0);
+    expect(intervalSpy).not.toHaveBeenCalled();
+    intervalSpy.mockRestore();
+  });
+ main
 });
