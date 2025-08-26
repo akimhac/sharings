@@ -25,6 +25,7 @@ describe("BackgroundCarousel", () => {
     expect(imgs[1].className).toContain("opacity-100");
   });
 
+
   it("does nothing when images array is empty", () => {
     const intervalSpy = vi.spyOn(window, "setInterval");
     const { container } = render(
@@ -34,4 +35,5 @@ describe("BackgroundCarousel", () => {
     expect(intervalSpy).not.toHaveBeenCalled();
     intervalSpy.mockRestore();
   });
+ main
 });
