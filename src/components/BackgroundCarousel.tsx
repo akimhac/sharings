@@ -25,6 +25,7 @@ export default function BackgroundCarousel({
   const paused = useRef(false);
 
   useEffect(() => {
+    if (images.length === 0) return;
     start();
     return stop;
     // eslint-disable-next-line react-hooks/exhaustive-deps
