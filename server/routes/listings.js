@@ -23,7 +23,7 @@ export default function listingRoutes(prisma) {
     const listings = await prisma.listing.findMany({
       where: {
         status: 'active',
-        salon: city ? { city } : undefined
+        salon: { city }
       },
       include: { salon: true }
     });

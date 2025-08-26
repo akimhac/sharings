@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Listing, sampleListings } from "../data/sampleListings";
 import { haversine } from "../lib/geo";
+import React, { useEffect, useMemo, useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
+import BackgroundCarousel from "../components/BackgroundCarousel";
+import { HERO_BG_IMAGES } from "../data/heroImages";
+ main
 
 /** ------------------------------------------------------------------
  *  PAGE D’ACCUEIL SHARINGS – Version “tout-en-un”
@@ -12,6 +17,72 @@ import { haversine } from "../lib/geo";
 
 type User = { id: number; name: string; email: string; type: "salon" | "freelancer" };
 
+const sampleListings: Listing[] = [
+  {
+    id: 1, title: "Salon Jean-Claude Biguine Premium", location: "Paris 1er",
+    lat: 48.8566, lng: 2.3522, price: 75, type: "coiffure",
+    distance: null, rating: 4.9, reviewsCount: 147,
+    description: "🌟 Salon de prestige au cœur de Paris. Équipements haut de gamme, ambiance luxueuse et clientèle VIP.",
+    features: ["Shampoing premium", "Séchoir Dyson", "Wifi fiber", "Parking privé", "Climatisation", "Café offert"],
+    address: "15 rue de Rivoli, 75001 Paris", phone: "01.42.36.12.34",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
+    ratings: { cleanliness: 4.9, equipment: 4.8, location: 4.9, value: 4.7, service: 5.0 }
+  },
+  {
+    id: 2, title: "Institut Clarins Prestige", location: "Lyon 6ème",
+    lat: 45.7640, lng: 4.8357, price: 65, type: "esthétique",
+    distance: null, rating: 4.8, reviewsCount: 98,
+    description: "✨ Institut de beauté renommé avec cabines privées et gamme complète de produits Clarins inclus.",
+    features: ["Cabine privée", "Produits Clarins", "Éclairage LED", "Musique zen", "Thé premium", "Vestiaire"],
+    address: "28 cours Franklin Roosevelt, 69006 Lyon", phone: "04.78.24.56.78",
+    image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop",
+    ratings: { cleanliness: 5.0, equipment: 4.9, location: 4.8, value: 4.6, service: 4.9 }
+  },
+  {
+    id: 3, title: "Nail Bar Marseille Creator", location: "Marseille 2ème",
+    lat: 43.2965, lng: 5.3698, price: 45, type: "nail-art",
+    distance: null, rating: 4.7, reviewsCount: 156,
+    description: "💅 Le temple du nail art marseillais ! Plus de 300 vernis, techniques avant-gardistes et spot Instagram.",
+    features: ["300+ vernis", "Nail art pro", "Lampe UV/LED", "Strass & déco", "Photo studio", "Musique"],
+    address: "45 La Canebière, 13002 Marseille", phone: "04.91.55.78.90",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop",
+    ratings: { cleanliness: 4.6, equipment: 4.8, location: 4.5, value: 4.8, service: 4.7 }
+  },
+  {
+    id: 4, title: "Barbier Le Figaro Vintage", location: "Toulouse Centre",
+    lat: 43.6047, lng: 1.4442, price: 55, type: "barbier",
+    distance: null, rating: 4.6, reviewsCount: 203,
+    description: "🪒 Barbier authentique avec ambiance vintage années 50. Rasage traditionnel et whisky offert !",
+    features: ["Rasoir traditionnel", "Aftershave premium", "Ambiance vintage", "Whisky offert", "Journaux", "Cigare"],
+    address: "12 place du Capitole, 31000 Toulouse", phone: "05.61.23.45.67",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&h=600&fit=crop",
+    ratings: { cleanliness: 4.5, equipment: 4.7, location: 4.8, value: 4.4, service: 4.6 }
+  },
+  {
+    id: 5, title: "Extensions Paradise Vue Mer", location: "Nice Promenade",
+    lat: 43.7102, lng: 7.2620, price: 95, type: "extension",
+    distance: null, rating: 4.9, reviewsCount: 78,
+    description: "💇‍♀️ Spécialiste extensions cheveux naturels avec vue imprenable sur la Méditerranée. Expérience VIP !",
+    features: ["Cheveux naturels", "Vue mer panoramique", "Parking privé", "Champagne", "Photos pro", "Terrasse"],
+    address: "8 Promenade des Anglais, 06000 Nice", phone: "04.93.87.65.43",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
+    ratings: { cleanliness: 4.9, equipment: 5.0, location: 5.0, value: 4.6, service: 4.9 }
+  },
+  {
+    id: 6, title: "Spa Urbain Bordeaux Zen", location: "Bordeaux Centre",
+    lat: 44.8378, lng: -0.5792, price: 70, type: "massage",
+    distance: null, rating: 4.8, reviewsCount: 112,
+    description: "🧘‍♀️ Espace détente zen au cœur de Bordeaux. Massages thérapeutiques et soins holistiques.",
+    features: ["Table massage chauffante", "Huiles bio", "Diffuseurs d'arômes", "Thé détox", "Vestiaire privé", "Douche"],
+    address: "33 cours de l'Intendance, 33000 Bordeaux", phone: "05.56.78.90.12",
+    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=600&fit=crop",
+    ratings: { cleanliness: 4.9, equipment: 4.7, location: 4.6, value: 4.8, service: 4.9 }
+  }
+];
+
+const heroImages = HERO_BG_IMAGES.map((src) => ({ src }));
+
+ main
 export default function LandingPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [listings, setListings] = useState<Listing[]>(() => sampleListings.map(l => ({ ...l })));
@@ -22,18 +93,7 @@ export default function LandingPage() {
   const [showAuth, setShowAuth] = useState(false);
   const [showListingModal, setShowListingModal] = useState(false);
 
-  // Carrousel
-  const slideIndex = useRef(0);
-  useEffect(() => {
-    const slides = document.querySelectorAll<HTMLDivElement>(".carousel-slide");
-    if (!slides.length) return;
-    const timer = setInterval(() => {
-      slides[slideIndex.current % slides.length]?.classList.remove("active");
-      slideIndex.current = (slideIndex.current + 1) % slides.length;
-      slides[slideIndex.current]?.classList.add("active");
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+  // Carrousel géré par React (via BackgroundCarousel)
 
   // Animations “fadeInUp” sur les cards
   useEffect(() => {
@@ -132,18 +192,20 @@ export default function LandingPage() {
     (e.target as HTMLFormElement).reset();
   };
 
-  // Notifications (petit toaster)
-  const notify = (msg: string, type: "success"|"error"|"warning"|"info" = "info") => {
-    const el = document.createElement("div");
-    el.textContent = msg;
-    el.className = `toast ${type}`;
-    document.body.appendChild(el);
-    setTimeout(() => el.classList.add("hide"), 2600);
-    setTimeout(() => el.remove(), 3000);
+  // Notifications via react-hot-toast
+  const notify = (
+    msg: string,
+    type: "success" | "error" | "warning" | "info" = "info"
+  ) => {
+    if (type === "success") toast.success(msg);
+    else if (type === "error") toast.error(msg);
+    else if (type === "warning") toast(msg, { icon: "⚠️" });
+    else toast(msg);
   };
 
   return (
     <>
+      <Toaster position="top-right" />
       {/* NAV */}
       <nav className="navbar">
         <div className="nav-container">
@@ -178,12 +240,7 @@ export default function LandingPage() {
 
       {/* HERO */}
       <section className="hero">
-        <div className="hero-carousel">
-          <div className="carousel-slide active" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1920&q=80)` }} />
-          <div className="carousel-slide" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=1920&q=80)` }} />
-          <div className="carousel-slide" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1920&q=80)` }} />
-          <div className="carousel-slide" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=1920&q=80)` }} />
-        </div>
+        <BackgroundCarousel images={heroImages} intervalMs={5000} className="hero-carousel" />
         <div className="hero-content">
           <h1 className="hero-title">Révolutionnez votre activité beauté</h1>
           <p className="hero-subtitle">
@@ -429,10 +486,6 @@ export default function LandingPage() {
 
         /* Hero */
         .hero{height:100vh;min-height:680px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
-        .hero-carousel{position:absolute;inset:0}
-        .carousel-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 2s}
-        .carousel-slide.active{opacity:1}
-        .carousel-slide::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.4),rgba(0,0,0,.65))}
         .hero-content{position:relative;z-index:2;text-align:center;color:#fff;max-width:900px;padding:0 24px}
         .hero-title{font-size:clamp(2.5rem,8vw,5.2rem);font-weight:900;letter-spacing:-.02em;margin:0 0 12px;text-shadow:0 4px 20px rgba(0,0,0,.45)}
         .hero-subtitle{font-size:clamp(1.1rem,3vw,1.6rem);opacity:.95;margin:0 0 32px}
@@ -484,11 +537,6 @@ export default function LandingPage() {
         .btn-full{width:100%;padding:14px 18px;border-radius:12px;margin-top:4px}
         .switch{margin:8px 0 0;color:var(--muted)}
         .switch a{text-decoration:underline}
-
-        /* Toast */
-        .toast{position:fixed;right:20px;top:20px;background:#667eea;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:var(--shadow);z-index:2000;transition:opacity .3s, transform .3s}
-        .toast.success{background:#10b981}.toast.error{background:#ef4444}.toast.warning{background:#f59e0b}
-        .toast.hide{opacity:0;transform:translateY(-10px)}
 
         /* Responsive */
         @media (max-width: 960px){
