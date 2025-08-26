@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Listing, sampleListings } from "../data/sampleListings";
+import { haversine } from "../lib/geo";
 
 /** ------------------------------------------------------------------
  *  PAGE D’ACCUEIL SHARINGS – Version “tout-en-un”
@@ -8,91 +10,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
  *  - Auth fictive + modal “Proposer un espace”
  *  ------------------------------------------------------------------ */
 
-type Listing = {
-  id: number;
-  title: string;
-  location: string;
-  lat: number | null;
-  lng: number | null;
-  price: number;
-  type: "coiffure" | "esthétique" | "nail-art" | "massage" | "barbier" | "extension" | string;
-  distance: number | null;
-  rating: number;
-  reviewsCount: number;
-  description: string;
-  features: string[];
-  address?: string;
-  phone?: string;
-  image: string;
-  ratings?: {
-    cleanliness: number; equipment: number; location: number; value: number; service: number;
-  };
-};
-
 type User = { id: number; name: string; email: string; type: "salon" | "freelancer" };
-
-const sampleListings: Listing[] = [
-  {
-    id: 1, title: "Salon Jean-Claude Biguine Premium", location: "Paris 1er",
-    lat: 48.8566, lng: 2.3522, price: 75, type: "coiffure",
-    distance: null, rating: 4.9, reviewsCount: 147,
-    description: "🌟 Salon de prestige au cœur de Paris. Équipements haut de gamme, ambiance luxueuse et clientèle VIP.",
-    features: ["Shampoing premium", "Séchoir Dyson", "Wifi fiber", "Parking privé", "Climatisation", "Café offert"],
-    address: "15 rue de Rivoli, 75001 Paris", phone: "01.42.36.12.34",
-    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
-    ratings: { cleanliness: 4.9, equipment: 4.8, location: 4.9, value: 4.7, service: 5.0 }
-  },
-  {
-    id: 2, title: "Institut Clarins Prestige", location: "Lyon 6ème",
-    lat: 45.7640, lng: 4.8357, price: 65, type: "esthétique",
-    distance: null, rating: 4.8, reviewsCount: 98,
-    description: "✨ Institut de beauté renommé avec cabines privées et gamme complète de produits Clarins inclus.",
-    features: ["Cabine privée", "Produits Clarins", "Éclairage LED", "Musique zen", "Thé premium", "Vestiaire"],
-    address: "28 cours Franklin Roosevelt, 69006 Lyon", phone: "04.78.24.56.78",
-    image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&h=600&fit=crop",
-    ratings: { cleanliness: 5.0, equipment: 4.9, location: 4.8, value: 4.6, service: 4.9 }
-  },
-  {
-    id: 3, title: "Nail Bar Marseille Creator", location: "Marseille 2ème",
-    lat: 43.2965, lng: 5.3698, price: 45, type: "nail-art",
-    distance: null, rating: 4.7, reviewsCount: 156,
-    description: "💅 Le temple du nail art marseillais ! Plus de 300 vernis, techniques avant-gardistes et spot Instagram.",
-    features: ["300+ vernis", "Nail art pro", "Lampe UV/LED", "Strass & déco", "Photo studio", "Musique"],
-    address: "45 La Canebière, 13002 Marseille", phone: "04.91.55.78.90",
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop",
-    ratings: { cleanliness: 4.6, equipment: 4.8, location: 4.5, value: 4.8, service: 4.7 }
-  },
-  {
-    id: 4, title: "Barbier Le Figaro Vintage", location: "Toulouse Centre",
-    lat: 43.6047, lng: 1.4442, price: 55, type: "barbier",
-    distance: null, rating: 4.6, reviewsCount: 203,
-    description: "🪒 Barbier authentique avec ambiance vintage années 50. Rasage traditionnel et whisky offert !",
-    features: ["Rasoir traditionnel", "Aftershave premium", "Ambiance vintage", "Whisky offert", "Journaux", "Cigare"],
-    address: "12 place du Capitole, 31000 Toulouse", phone: "05.61.23.45.67",
-    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&h=600&fit=crop",
-    ratings: { cleanliness: 4.5, equipment: 4.7, location: 4.8, value: 4.4, service: 4.6 }
-  },
-  {
-    id: 5, title: "Extensions Paradise Vue Mer", location: "Nice Promenade",
-    lat: 43.7102, lng: 7.2620, price: 95, type: "extension",
-    distance: null, rating: 4.9, reviewsCount: 78,
-    description: "💇‍♀️ Spécialiste extensions cheveux naturels avec vue imprenable sur la Méditerranée. Expérience VIP !",
-    features: ["Cheveux naturels", "Vue mer panoramique", "Parking privé", "Champagne", "Photos pro", "Terrasse"],
-    address: "8 Promenade des Anglais, 06000 Nice", phone: "04.93.87.65.43",
-    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
-    ratings: { cleanliness: 4.9, equipment: 5.0, location: 5.0, value: 4.6, service: 4.9 }
-  },
-  {
-    id: 6, title: "Spa Urbain Bordeaux Zen", location: "Bordeaux Centre",
-    lat: 44.8378, lng: -0.5792, price: 70, type: "massage",
-    distance: null, rating: 4.8, reviewsCount: 112,
-    description: "🧘‍♀️ Espace détente zen au cœur de Bordeaux. Massages thérapeutiques et soins holistiques.",
-    features: ["Table massage chauffante", "Huiles bio", "Diffuseurs d'arômes", "Thé détox", "Vestiaire privé", "Douche"],
-    address: "33 cours de l'Intendance, 33000 Bordeaux", phone: "05.56.78.90.12",
-    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=600&fit=crop",
-    ratings: { cleanliness: 4.9, equipment: 4.7, location: 4.6, value: 4.8, service: 4.9 }
-  }
-];
 
 export default function LandingPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -130,17 +48,13 @@ export default function LandingPage() {
   }, []);
 
   // Calcul distance depuis géoloc utilisateur
-  const computeDistances = (pos: {lat:number; lng:number}) => {
-    const R = 6371;
-    const rad = (v:number) => v * Math.PI / 180;
-    setListings(prev => prev.map(l => {
-      if (!l.lat || !l.lng) return { ...l, distance: null };
-      const dLat = rad(l.lat - pos.lat);
-      const dLon = rad(l.lng - pos.lng);
-      const a = Math.sin(dLat/2)**2 + Math.cos(rad(pos.lat))*Math.cos(rad(l.lat))*Math.sin(dLon/2)**2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return { ...l, distance: R * c };
-    }));
+  const computeDistances = (pos: { lat: number; lng: number }) => {
+    setListings(prev =>
+      prev.map(l => {
+        if (!l.lat || !l.lng) return { ...l, distance: null };
+        return { ...l, distance: haversine(pos.lat, pos.lng, l.lat, l.lng) };
+      })
+    );
   };
 
   const askGeoloc = () => {
