@@ -17,6 +17,23 @@ export default function paymentRoutes(prisma) {
       res.json({ success: true });
     } catch (err) {
       res.status(400).json({ error: err.message });
+
+  router.post('/access', authMiddleware, async (req, res) => {
+    try {
+      await prisma.$transaction([
+        prisma.payment.create({
+          data: { userId: req.user.userId, amount: 4.99, type: 'access' }
+        }),
+        prisma.user.update({
+          where: { id: req.user.userId },
+          data: { paidAccess: true }
+        })
+      ]);
+      res.json({ success: true });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'PAYMENT_ERROR' });
+ main
     }
   });
 
@@ -36,6 +53,22 @@ export default function paymentRoutes(prisma) {
       res.json({ success: true });
     } catch (err) {
       res.status(400).json({ error: err.message });
+
+    try {
+      await prisma.$transaction([
+        prisma.payment.create({
+          data: { userId: req.user.userId, amount: 9.99, type: 'listing' }
+        }),
+        prisma.listing.update({
+          where: { id: listingId },
+          data: { activeUntil }
+        })
+      ]);
+      res.json({ success: true });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'PAYMENT_ERROR' });
+ main
     }
   });
 
@@ -56,6 +89,26 @@ export default function paymentRoutes(prisma) {
       res.json(request);
     } catch (err) {
       res.status(400).json({ error: err.message });
+
+
+    try {
+      const [, request] = await prisma.$transaction([
+        prisma.payment.create({
+          data: { userId: req.user.userId, amount: 9.99, type: 'search' }
+        }),
+        prisma.searchRequest.create({
+          data: {
+            clientId: req.user.userId,
+            description,
+            city
+          }
+        })
+      ]);
+      res.json(request);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'PAYMENT_ERROR' });
+ main
     }
   });
 
