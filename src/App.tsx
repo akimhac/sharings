@@ -7,6 +7,7 @@ import NewAnnoncePage from "./pages/NewAnnoncePage"
 import BookingPage from "./pages/BookingPage"
 import MessagingPage from "./pages/MessagingPage"
 import ContractPage from "./pages/ContractPage"
+import DashboardPage from "./pages/DashboardPage"
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/reservations" element={<BookingPage />} />
       <Route path="/messages" element={<MessagingPage />} />
       <Route path="/contrat" element={<ContractPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
     </Routes>
   )
 }
