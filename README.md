@@ -11,6 +11,7 @@ Marketplace reliant salons de coiffure/esthétique et indépendants avec réserv
 2. Copier `.env.example` vers `.env` et renseigner :
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
+   - `JWT_SECRET` (clé secrète pour signer les JWT)
 3. Lancer en développement :
    ```bash
    npm run dev
