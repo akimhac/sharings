@@ -1,16 +1,28 @@
 import { useState } from "react"
 import { supabase } from "../lib/supa"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-hot-toast"
+import { useAuth } from "../contexts/AuthContext"
 
 export default function NewAnnoncePage() {
   const [titre, setTitre] = useState("")
   const [description, setDescription] = useState("")
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!user) {
+      toast.error("Vous devez être connecté pour publier")
+      return
+    }
     const { error } = await supabase.from("annonces").insert({ titre, description })
-    if (!error) navigate("/annonces")
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success("Annonce publiée")
+      navigate("/annonces")
+    }
   }
 
   return (
