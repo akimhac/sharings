@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import BackgroundCarousel from "../components/BackgroundCarousel";
 import { HERO_BG_IMAGES } from "../data/heroImages";
@@ -108,6 +109,7 @@ export default function LandingPage() {
   const [authMode, setAuthMode] = useState<"login"|"register">("login");
   const [showAuth, setShowAuth] = useState(false);
   const [showListingModal, setShowListingModal] = useState(false);
+  const navigate = useNavigate();
 
   // Carrousel géré par React (via BackgroundCarousel)
 
@@ -172,6 +174,7 @@ export default function LandingPage() {
     setCurrentUser({ id: 1, email, name, type });
     setShowAuth(false);
     notify("🎉 Connexion réussie !", "success");
+    navigate("/dashboard");
   };
 
   const handleRegister = (e: React.FormEvent) => {
