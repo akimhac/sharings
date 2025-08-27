@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supa";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
 
   // Empêche le scroll du body quand le menu est ouvert (mobile)
   useEffect(() => {
@@ -26,8 +34,17 @@ export default function Navbar() {
         {/* Desktop */}
         <nav className="hidden sm:flex items-center gap-3">
           <a href="#how" className="btn btn-ghost">Comment ça marche</a>
-          <a href="/login" className="btn btn-light">Se connecter</a>
-          <a href="/register" className="btn btn-primary">Créer un compte</a>
+          {user ? (
+            <>
+              <a href="/dashboard" className="btn btn-light">Mon espace</a>
+              <button onClick={handleLogout} className="btn btn-light">Se déconnecter</button>
+            </>
+          ) : (
+            <>
+              <a href="/login" className="btn btn-light">Se connecter</a>
+              <a href="/register" className="btn btn-primary">Créer un compte</a>
+            </>
+          )}
         </nav>
 
         {/* Burger */}
@@ -66,8 +83,17 @@ export default function Navbar() {
         >
           <div className="p-5 space-y-3">
             <a href="#how" className="btn btn-ghost w-full justify-start text-left">Comment ça marche</a>
-            <a href="/login" className="btn btn-light w-full justify-start">Se connecter</a>
-            <a href="/register" className="btn btn-primary w-full justify-center">Créer un compte</a>
+            {user ? (
+              <>
+                <a href="/dashboard" className="btn btn-light w-full justify-start">Mon espace</a>
+                <button onClick={handleLogout} className="btn btn-light w-full justify-start">Se déconnecter</button>
+              </>
+            ) : (
+              <>
+                <a href="/login" className="btn btn-light w-full justify-start">Se connecter</a>
+                <a href="/register" className="btn btn-primary w-full justify-center">Créer un compte</a>
+              </>
+            )}
           </div>
         </nav>
       </div>
