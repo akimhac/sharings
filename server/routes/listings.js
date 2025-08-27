@@ -41,18 +41,6 @@ export default function listingRoutes(prisma) {
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
-
-  router.get('/', async (req, res) => {
-    const { city } = req.query;
-    const listings = await prisma.listing.findMany({
-      where: {
-        status: 'active',
-        salon: { city }
-      },
-      include: { salon: true }
-    });
-    res.json(listings);
- main
   });
 
   return router;
