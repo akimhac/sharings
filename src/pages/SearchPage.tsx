@@ -9,11 +9,19 @@ export default function SearchPage() {
   const [services, setServices] = useState<string[]>([]); const [priceMax, setPriceMax] = useState<number>(120);
   const [page, setPage] = useState(1);
   const [res, setRes] = useState<any>({ data: [], count: 0 });
+  const [error, setError] = useState<string|null>(null);
 
   useEffect(() => { (async () => {
-    const r = await searchBusinesses({ q, cityId: city?.id, services, priceMax, page, sort: "rating" });
-    setRes(r);
-  })(); }, [q, city?.id, services, priceMax, page]);
+    try {
+      const cityName = city ? undefined : cityInput.trim() || undefined;
+      const r = await searchBusinesses({ q, cityId: city?.id, cityName, services, priceMax, page, sort: "rating" });
+      setRes(r);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message);
+      setRes({ data: [], count: 0 });
+    }
+  })(); }, [q, city?.id, cityInput, services, priceMax, page]);
 
   useEffect(() => { (async () => {
     if (cityInput.trim().length < 2) { setCities([]); return; }
@@ -31,6 +39,7 @@ export default function SearchPage() {
           <div className="md:col-span-2">
             <label className="text-sm text-white/70">Ville</label>
             <input value={cityInput} onChange={(e)=>setCityInput(e.target.value)} placeholder="Paris, Lyon…" className="w-full mt-1 rounded-xl bg-white/5 border border-white/10 px-3 py-2"/>
+            {error && <div className="mt-1 text-sm text-red-400">{error}</div>}
             {cities.length>0 && (
               <div className="mt-2 bg-base border border-white/10 rounded-xl p-2 max-h-56 overflow-auto">
                 {cities.map(c => (
