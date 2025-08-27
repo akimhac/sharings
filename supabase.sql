@@ -36,3 +36,34 @@ create policy "Annonces publiques" on annonces for select using (true);
 create policy "Gestion proprieataire" on annonces for insert using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "Update propre" on annonces for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "Delete propre" on annonces for delete using (auth.uid() = user_id);
+
+-- Table des villes
+create table if not exists cities (
+  id uuid primary key default gen_random_uuid(),
+  insee_code text unique not null,
+  name text not null,
+  lat numeric,
+  lon numeric,
+  population integer
+);
+
+alter table cities enable row level security;
+create policy "Villes publiques" on cities for select using (true);
+
+-- Table des entreprises
+create table if not exists businesses (
+  id uuid primary key default gen_random_uuid(),
+  kind text check (kind in ('salon','institut')),
+  name text not null,
+  city_id uuid references cities(id) on delete set null,
+  address text,
+  price_min integer,
+  price_max integer,
+  rating numeric,
+  tags text[] default '{}',
+  images jsonb default '[]'::jsonb,
+  created_at timestamptz default now()
+);
+
+alter table businesses enable row level security;
+create policy "Entreprises publiques" on businesses for select using (true);
