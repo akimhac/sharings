@@ -18,7 +18,7 @@ export default function LoginPage() {
       toast.error(error.message)
     } else {
       toast.success("Connexion réussie")
-      navigate("/")
+      navigate("/dashboard")
     }
   }
 
