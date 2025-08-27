@@ -23,23 +23,6 @@ export default function authRoutes(prisma) {
       res.status(400).json({ error: err.message });
     }
   });
-
-  router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ message: 'JWT_SECRET not configured' });
-    }
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' }
-    );
-    res.json({ token });
-
   const loginSchema = {
     email: 'string',
     password: 'string'
@@ -60,7 +43,6 @@ export default function authRoutes(prisma) {
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
- main
   });
 
   return router;
