@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sharings — Dashboard</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    .topbar{position:fixed;left:0;right:0;top:0;height:80px;background:rgba(255,255,255,.95);
+      backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;border-bottom:1px solid rgba(221,221,221,.45);z-index:50}
+    .logo{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#ff385c,#667eea);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .wrap{max-width:1200px;margin:120px auto 60px;padding:0 24px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+    .card{background:#fff;border:1px solid #e9e9e9;border-radius:20px;box-shadow:0 8px 36px rgba(0,0,0,.06);padding:26px}
+    .title{font-size:1.85rem;font-weight:800;margin:0 0 8px}
+    .muted{color:#717171}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff385c,#e31c5f);
+      color:#fff;border:none;border-radius:14px;padding:12px 18px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(255,56,92,.28)}
+    .btn-outline{background:#fff;color:#222;border:2px solid #ddd;border-radius:14px;padding:10px 16px;font-weight:700;cursor:pointer}
+    .list{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+    .row{display:flex;justify-content:space-between;gap:12px;padding:14px;border:1px solid #efefef;border-radius:14px}
+    .badge{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;border-radius:999px;padding:6px 10px;background:rgba(102,126,234,.12);color:#667eea;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">Sharings</div>
+    <div style="display:flex;gap:10px">
+      <a class="btn-outline" href="./">Accueil</a>
+      <button class="btn-outline" id="logout-btn">Se déconnecter</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="card" style="margin-bottom:24px">
+      <div class="title">Bienvenue, <span id="user-name">—</span> 👋</div>
+      <div class="muted" id="user-email">—</div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <span class="badge" id="role-badge">Rôle: —</span>
+        <span class="badge" id="sub-badge">Abonnement: —</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="salon-block" style="display:none">
+        <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:6px">Mes annonces</h3>
+        <p class="muted">Aperçu rapide de vos espaces publiés.</p>
+        <div class="list" id="annonces-list"></div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="open-listing-modal">💼 Ajouter une annonce</button>
+          <a href="#listings" class="btn-outline" id="go-to-market">Voir le marketplace</a>
+        </div>
+      </div>
+
+      <div class="card" id="client-block" style="display:none">
+        <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:6px">Mes réservations</h3>
+        <p class="muted">Vos réservations récentes.</p>
+        <div class="list" id="reservations-list"></div>
+        <div style="margin-top:16px">
+          <a href="./#listings" class="btn">🔍 Trouver un espace</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:6px">Messagerie</h3>
+        <p class="muted">Derniers messages.</p>
+        <div class="list" id="messages-list"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:6px">Abonnement</h3>
+        <p class="muted" id="sub-text">Vérification en cours…</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <a class="btn" id="subscribe-btn" target="_blank">⭐ Devenir Premium</a>
+          <button class="btn-outline" id="refresh-sub">Actualiser</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const SUPABASE_URL = "${SUPABASE_URL}";
+    const SUPABASE_ANON = "${SUPABASE_ANON}";
+    const STRIPE_PK     = "${STRIPE_PK}";
+    const STRIPE_PAYMENT_LINK = "${STRIPE_PAYMENT_LINK}";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const stripe   = Stripe(STRIPE_PK);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) window.location.href = "./";
+    const user = session.user;
+
+    // Header
+    document.getElementById("user-name").textContent  = user.user_metadata?.full_name || (user.email?.split("@")[0] ?? "Utilisateur");
+    document.getElementById("user-email").textContent = user.email ?? "";
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await supabase.auth.signOut(); window.location.href = "./";
+    });
+
+    // Profile
+    async function getOrCreateProfile() {
+      let { data: prof } = await supabase.from("user_profiles").select("*").eq("user_id", user.id).maybeSingle();
+      if (!prof) {
+        const insert = { user_id:user.id, email:user.email, name:user.user_metadata?.full_name || null, role:"client" };
+        const { data } = await supabase.from("user_profiles").insert(insert).select().single();
+        prof = data;
+      }
+      return prof;
+    }
+    const profile = await getOrCreateProfile();
+    document.getElementById("role-badge").textContent = `Rôle: ${profile.role}`;
+
+    // Subscription
+    async function refreshSub() {
+      const { data } = await supabase.from("stripe_user_subscriptions")
+        .select("*").eq("user_id", user.id).order("created_at",{ascending:false}).limit(1);
+      let active = false;
+      if (data?.length) active = ["active","trialing","past_due"].includes((data[0].status||"").toLowerCase());
+      document.getElementById("sub-badge").textContent = `Abonnement: ${active?"Actif ✅":"Inactif ⛔"}`;
+      document.getElementById("sub-text").textContent  = active ? "Merci ! Votre abonnement Premium est actif." : "Vous n’avez pas encore d’abonnement actif.";
+      const subBtn = document.getElementById("subscribe-btn");
+      subBtn.textContent = active ? "Gérer mon abonnement (Stripe)" : "⭐ Devenir Premium";
+      if (STRIPE_PAYMENT_LINK) subBtn.href = STRIPE_PAYMENT_LINK;
+      else subBtn.onclick = () => alert("Ajoutez votre Payment Link Stripe dans STRIPE_PAYMENT_LINK.");
+    }
+    await refreshSub();
+    document.getElementById("refresh-sub").onclick = refreshSub;
+
+    // Role-based blocks
+    if (profile.role === "salon") { document.getElementById("salon-block").style.display="block"; loadAnnonces(); }
+    else { document.getElementById("client-block").style.display="block"; loadReservations(); }
+
+    // Data blocks
+    async function loadAnnonces() {
+      const { data } = await supabase.from("annonces")
+        .select("id,title,city,price_per_day,status,created_at").eq("owner_id", user.id)
+        .order("created_at",{ascending:false}).limit(5);
+      const el = document.getElementById("annonces-list");
+      el.innerHTML = data?.length ? "" : "<div class='muted'>Aucune annonce pour le moment.</div>";
+      (data||[]).forEach(a=>{
+        const r=document.createElement("div"); r.className="row";
+        r.innerHTML = `
+          <div>
+            <div style="font-weight:800">${a.title ?? "Annonce"}</div>
+            <div class="muted">${a.city ?? "—"} · ${a.price_per_day? a.price_per_day+"€ / jour":"—"}</div>
+          </div>
+          <div><span class="badge">${(a.status??"brouillon").toUpperCase()}</span></div>`;
+        el.appendChild(r);
+      });
+      document.getElementById("open-listing-modal").onclick = () => window.location.href="./#listings";
+    }
+
+    async function loadReservations() {
+      const { data } = await supabase.from("reservations")
+        .select("id,listing_title,city,date_from,date_to,price,status").eq("user_id", user.id)
+        .order("date_from",{ascending:false}).limit(5);
+      const el = document.getElementById("reservations-list");
+      el.innerHTML = data?.length ? "" : "<div class='muted'>Aucune réservation récente.</div>";
+      (data||[]).forEach(r=>{
+        const d1=r.date_from? new Date(r.date_from).toLocaleDateString():"—";
+        const d2=r.date_to? new Date(r.date_to).toLocaleDateString():"—";
+        const row=document.createElement("div"); row.className="row";
+        row.innerHTML = `
+          <div>
+            <div style="font-weight:800">${r.listing_title ?? "Espace"}</div>
+            <div class="muted">${r.city ?? "—"} · ${d1} → ${d2}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:800">${r.price? r.price+"€":"—"}</div>
+            <span class="badge">${(r.status??"en_attente").toUpperCase()}</span>
+          </div>`;
+        el.appendChild(row);
+      });
+    }
+
+    async function loadMessages() {
+      const { data } = await supabase.from("messages")
+        .select("id,subject,preview,created_at").eq("user_id", user.id)
+        .order("created_at",{ascending:false}).limit(5);
+      const el=document.getElementById("messages-list");
+      el.innerHTML = data?.length ? "" : "<div class='muted'>Pas de message récent.</div>";
+      (data||[]).forEach(m=>{
+        const row=document.createElement("div"); row.className="row";
+        row.innerHTML = `
+          <div>
+            <div style="font-weight:800">${m.subject ?? "Message"}</div>
+            <div class="muted" style="max-width:520px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+              ${m.preview ?? ""}
+            </div>
+          </div>
+          <div class="muted">${new Date(m.created_at).toLocaleDateString()}</div>`;
+        el.appendChild(row);
+      });
+    }
+    loadMessages();
+  </script>
+</body>
+</html>
