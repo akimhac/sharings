@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sharings — Réservations</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .topbar{position:fixed;left:0;right:0;top:0;height:80px;background:rgba(255,255,255,.95);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid rgba(221,221,221,.45);z-index:50}
+    .logo{font-weight:900;font-size:1.35rem;background:linear-gradient(135deg,#ff385c,#667eea);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .wrap{max-width:1100px;margin:120px auto 60px;padding:0 24px}
+    .card{background:#fff;border:1px solid #e9e9e9;border-radius:20px;box-shadow:0 8px 36px rgba(0,0,0,.06);padding:26px}
+    .row{display:flex;justify-content:space-between;gap:12px;padding:14px;border:1px solid #efefef;border-radius:14px}
+    .muted{color:#717171}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff385c,#e31c5f);color:#fff;border:none;border-radius:14px;padding:10px 16px;font-weight:700;cursor:pointer}
+    .btn-outline{background:#fff;color:#222;border:2px solid #ddd;border-radius:14px;padding:10px 16px;font-weight:700;cursor:pointer}
+    input,select{width:100%;padding:12px;border:2px solid #ddd;border-radius:12px;font:inherit}
+    label{font-weight:700;margin:10px 0 6px;display:block}
+    .grid{display:grid;grid-template-columns:1fr 370px;gap:24px}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">Sharings</div>
+    <div style="display:flex;gap:10px">
+      <a class="btn-outline" href="./dashboard.html">Dashboard</a>
+      <a class="btn-outline" href="./manage-listings.html">Mes annonces</a>
+      <a class="btn-outline" href="./messages.html">Messages</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin-top:0">Mes réservations</h2>
+        <div id="list" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
+      <div class="card" id="new-card" style="display:none">
+        <h3 style="margin-top:0">Nouvelle réservation (client)</h3>
+        <form id="f">
+          <label>Espace</label>
+          <select id="listing"></select>
+          <label>Du</label><input id="from" type="date" required/>
+          <label>Au</label><input id="to" type="date" required/>
+          <label>Prix total (€)</label><input id="price" type="number" min="0" step="1" value="50" required/>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button class="btn" type="submit">📅 Réserver</button>
+            <button class="btn-outline" type="reset">Réinitialiser</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { sb, requireSession, fmtDate, toast } from "./assets/app.js";
+    const supabase = sb();
+    const session = await requireSession(); if(!session) throw new Error();
+    const user = session.user;
+
+    // profile to detect role
+    let { data: prof } = await supabase.from("user_profiles").select("role,name").eq("user_id", user.id).maybeSingle();
+    const role = prof?.role || "client";
+
+    // show client-only form
+    if (role === "client") document.getElementById("new-card").style.display = "block";
+
+    // populate listings dropdown for client (only published)
+    async function loadListingsForClient() {
+      if (role !== "client") return;
+      const { data } = await supabase.from("annonces").select("id,title,city,price_per_day").eq("status","publiee").order("created_at",{ascending:false});
+      const sel = document.getElementById("listing");
+      sel.innerHTML = (data||[]).map(l=>`<option value="${l.id}">${l.title} — ${l.city} · ${l.price_per_day??"-"}€</option>`).join("");
+    }
+
+    // load reservations for this user (client) OR for owner listings (salon)
+    async function loadReservations() {
+      const urlParams = new URLSearchParams(location.search);
+      const filterListing = urlParams.get("listing");
+
+      let query = supabase.from("reservations")
+        .select("id, listing_id, listing_title, city, date_from, date_to, price, status, user_id, created_at, owner_id")
+        .order("created_at",{ascending:false}).limit(100);
+
+      if (role === "client") {
+        query = query.eq("user_id", user.id);
+      } else { // salon
+        if (filterListing) query = query.eq("listing_id", filterListing);
+        else query = query.eq("owner_id", user.id);
+      }
+
+      const { data, error } = await query;
+      const el = document.getElementById("list");
+      el.innerHTML = error ? `<div class="muted">Erreur: ${error.message}</div>` :
+        (data?.length ? "" : "<div class='muted'>Aucune réservation.</div>");
+
+      (data||[]).forEach(r=>{
+        const row = document.createElement("div");
+        row.className="row";
+        const badge = r.status ? `<span class="muted" style="border:1px solid #ddd;border-radius:10px;padding:2px 8px">${r.status}</span>` : "";
+        row.innerHTML = `
+          <div>
+            <div style="font-weight:800">${r.listing_title||"Espace"} — ${r.city||""} ${badge}</div>
+            <div class="muted">Du ${new Date(r.date_from).toLocaleDateString()} au ${new Date(r.date_to).toLocaleDateString()} · ${r.price??"-"}€</div>
+            <div class="muted">Créée le ${fmtDate(r.created_at)}</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            ${role!=="client" ? `<button class="btn-outline" data-accept="${r.id}">Accepter</button>
+            <button class="btn-outline" data-refuse="${r.id}">Refuser</button>` : ""}
+            <button class="btn-outline" data-del="${r.id}">Supprimer</button>
+          </div>`;
+        el.appendChild(row);
+      });
+
+      // actions
+      el.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
+        if(!confirm("Supprimer cette réservation ?"))return;
+        const cond = role==="client" ? { user_id: user.id } : { owner_id: user.id };
+        await supabase.from("reservations").delete().eq("id", b.dataset.del).match(cond);
+        toast("Supprimée");
+      });
+
+      el.querySelectorAll("[data-accept]").forEach(b=>b.onclick=()=>updateStatus(b.dataset.accept,"confirmee"));
+      el.querySelectorAll("[data-refuse]").forEach(b=>b.onclick=()=>updateStatus(b.dataset.refuse,"refusee"));
+    }
+
+    async function updateStatus(id, status) {
+      await supabase.from("reservations").update({ status }).eq("id", id).eq("owner_id", user.id);
+      toast("Statut mis à jour");
+    }
+
+    // create reservation (client)
+    const f = document.getElementById("f");
+    if (f) f.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const listingId = document.getElementById("listing").value;
+      const { data: listing } = await supabase.from("annonces").select("id,title,city,owner_id,price_per_day").eq("id", listingId).single();
+
+      const payload = {
+        user_id: user.id,
+        owner_id: listing.owner_id,
+        listing_id: listing.id,
+        listing_title: listing.title,
+        city: listing.city,
+        date_from: document.getElementById("from").value,
+        date_to: document.getElementById("to").value,
+        price: Number(document.getElementById("price").value || listing.price_per_day || 0),
+        status: "en_attente"
+      };
+      await supabase.from("reservations").insert(payload);
+      e.currentTarget.reset();
+      toast("✅ Demande envoyée");
+    });
+
+    // realtime
+    supabase.channel('reservations-stream')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, loadReservations)
+      .subscribe();
+
+    await loadListingsForClient();
+    await loadReservations();
+  </script>
+</body>
+</html>

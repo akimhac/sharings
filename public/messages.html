@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sharings — Messages</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .topbar{position:fixed;left:0;right:0;top:0;height:80px;background:rgba(255,255,255,.95);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid rgba(221,221,221,.45);z-index:50}
+    .logo{font-weight:900;font-size:1.35rem;background:linear-gradient(135deg,#ff385c,#667eea);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .wrap{max-width:1100px;margin:120px auto 60px;padding:0 24px}
+    .card{background:#fff;border:1px solid #e9e9e9;border-radius:20px;box-shadow:0 8px 36px rgba(0,0,0,.06);padding:26px}
+    .row{display:flex;justify-content:space-between;gap:12px;padding:14px;border:1px solid #efefef;border-radius:14px}
+    .muted{color:#717171}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff385c,#e31c5f);color:#fff;border:none;border-radius:14px;padding:10px 16px;font-weight:700;cursor:pointer}
+    .btn-outline{background:#fff;color:#222;border:2px solid #ddd;border-radius:14px;padding:10px 16px;font-weight:700;cursor:pointer}
+    input,textarea{width:100%;padding:12px;border:2px solid #ddd;border-radius:12px;font:inherit}
+    label{font-weight:700;margin:10px 0 6px;display:block}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:24px}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">Sharings</div>
+    <div style="display:flex;gap:10px">
+      <a class="btn-outline" href="./dashboard.html">Dashboard</a>
+      <a class="btn-outline" href="./reservations.html">Réservations</a>
+      <a class="btn-outline" href="./">Accueil</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin-top:0">Boîte de réception</h2>
+        <div id="list" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Nouveau message</h3>
+        <form id="f">
+          <label>Destinataire (email)</label>
+          <input id="to" type="email" placeholder="destinataire@exemple.com" required/>
+          <label>Objet</label>
+          <input id="subject" required/>
+          <label>Message</label>
+          <textarea id="body" rows="6" required></textarea>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button class="btn" type="submit">✉️ Envoyer</button>
+            <button class="btn-outline" type="reset">Réinitialiser</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { sb, requireSession, fmtDate, toast } from "./assets/app.js";
+    const supabase = sb();
+    const session = await requireSession(); if(!session) throw new Error();
+    const user = session.user;
+
+    async function load() {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("id,from_email,to_email,subject,preview,created_at")
+        .or(`to_email.eq.${user.email},from_email.eq.${user.email}`)
+        .order("created_at",{ascending:false}).limit(100);
+
+      const el = document.getElementById("list");
+      el.innerHTML = error ? `<div class="muted">Erreur: ${error.message}</div>`
+        : (data?.length ? "" : "<div class='muted'>Aucune conversation.</div>");
+
+      (data||[]).forEach(m=>{
+        const row = document.createElement("div");
+        row.className="row";
+        const who = m.from_email===user.email ? `→ ${m.to_email}` : `← ${m.from_email}`;
+        row.innerHTML = `
+          <div>
+            <div style="font-weight:800">${m.subject||"(Sans objet)"} <span class="muted">${who}</span></div>
+            <div class="muted" style="max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.preview||""}</div>
+            <div class="muted">${fmtDate(m.created_at)}</div>
+          </div>`;
+        el.appendChild(row);
+      });
+    }
+
+    document.getElementById("f").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const payload = {
+        from_email: user.email,
+        to_email: document.getElementById("to").value.trim(),
+        subject: document.getElementById("subject").value.trim(),
+        preview: document.getElementById("body").value.trim().slice(0,180)
+      };
+      await supabase.from("messages").insert(payload);
+      e.currentTarget.reset();
+      toast("✅ Message envoyé");
+    });
+
+    supabase.channel('messages-stream')
+      .on('postgres_changes',{event:'*',schema:'public',table:'messages'},load)
+      .subscribe();
+
+    await load();
+  </script>
+</body>
+</html>
