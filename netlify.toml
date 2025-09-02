@@ -6,3 +6,7 @@
     NPM_FLAGS = "--no-fund --no-audit"
 
 # NOTE: Les règles sont désormais fournies par public/_headers et public/_redirects. 
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
