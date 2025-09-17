@@ -19,7 +19,7 @@ app.get('/api/health', (req, res) => {
 
 app.post('/api/payments/create-checkout', async (req, res) => {
   try {
-    const stripe = require('stripe')('sk_test_51RFXd74TwnyssOIs2UVMct1Y4gPO6nSxF7kG0v1cjMMKz0UOtFEpR0Fj2YC9UnsXFUv5GiQmsiXOipM5KFvDMriL001zA3PhuJ')
+    const stripe = require('stripe')('process.env.STRIPE_SECRET_KEY')
     
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -58,7 +58,7 @@ app.listen(PORT, () => {
 app.use('/webhook', express.raw({type: 'application/json'}))
 
 app.post('/api/stripe/webhook', async (req, res) => {
-  const stripe = require('stripe')('sk_test_51RFXd74TwnyssOIs2UVMct1Y4gPO6nSxF7kG0v1cjMMKz0UOtFEpR0Fj2YC9UnsXFUv5GiQmsiXOipM5KFvDMriL001zA3PhuJ')
+  const stripe = require('stripe')('process.env.STRIPE_SECRET_KEY')
   
   try {
     const event = stripe.webhooks.constructEvent(req.body, req.headers['stripe-signature'], 'whsec_test')
